@@ -20,7 +20,6 @@ abstract class Scene {
     }
 
     fun addGameObjectToScene(gameObject: GameObject) {
-        gameObjects.add(gameObject)
         if(!isRunning) {
             gameObjects.add(gameObject)
         }else{

@@ -20,7 +20,7 @@ class LevelEditorScene : Scene() {
 
         sprites = AssetPool.getSpriteSheet(Texture.PETER_SPRITE)!!
 
-        go1.addComponent(SpriteRenderer(sprites!!.getSprite(2)))
+        go1.addComponent(SpriteRenderer(sprites!!.getSprite(spriteIndex)))
         addGameObjectToScene(go1)
     }
 
@@ -43,11 +43,11 @@ class LevelEditorScene : Scene() {
         if(spriteFlipTimeLeft < 0f) {
             spriteFlipTimeLeft = spriteFlipTime
             spriteIndex++
-            if(spriteIndex > 6) spriteIndex = 0
+            if(spriteIndex > 5) spriteIndex = 0
             go1.getComponent(SpriteRenderer::class.java)?.setSprite(sprites.getSprite(spriteIndex + 1))
         }
 
-        go1.transform.position.x += 50 * dt
+        go1.transform.position.x += 150 * dt
 
         gameObjects.forEach { it.update(dt) }
         renderer.render()

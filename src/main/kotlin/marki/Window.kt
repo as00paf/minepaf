@@ -19,6 +19,11 @@ object Window {
     private var glfwWindow: Long = -1L
     private var currentScene: Scene = LevelEditorScene()
 
+    private var r = 1.0f
+    private var g = 1.0f
+    private var b = 1.0f
+    private var a = 1.0f
+
     fun get(): Window = this
 
     fun run() {
@@ -80,7 +85,7 @@ object Window {
         while(!glfwWindowShouldClose(glfwWindow)) {
             glfwPollEvents()
 
-            glClearColor(1f, 1f, 1f, 1.0f)
+            glClearColor(r, g, b, a)
             glClear(GL_COLOR_BUFFER_BIT)
 
             if( dt > 0 ) currentScene.update(dt)
