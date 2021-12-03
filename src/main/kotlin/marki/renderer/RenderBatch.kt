@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL30.glBindVertexArray
 import org.lwjgl.opengl.GL30.glGenVertexArrays
 import util.AssetPool
 
-class RenderBatch(private var maxBatchSize: Int) {
+class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Comparable<RenderBatch> {
     // Vertex
     // ======
     // Pos                  Color                                   Text coords         texId
@@ -62,8 +62,10 @@ class RenderBatch(private var maxBatchSize: Int) {
         sprites[index] = sprite
         spriteCount ++
 
-        if(!textures.contains(sprite.getTexture())) {
-            textures.add(sprite.getTexture())
+        sprite.getTexture()?.let { spriteTexture ->
+            if(!textures.contains(spriteTexture)) {
+                textures.add(spriteTexture)
+            }
         }
 
         // Add properties to local vertices array
@@ -195,6 +197,11 @@ class RenderBatch(private var maxBatchSize: Int) {
 
     fun hasTexture(texture: Texture?) = texture != null && textures.contains(texture)
 
+    fun zIndex() = zIndex
+
+    override fun compareTo(other: RenderBatch): Int {
+        return zIndex.compareTo(other.zIndex)
+    }
 }
 
 const val POS_SIZE = 2

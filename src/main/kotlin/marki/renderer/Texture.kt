@@ -4,7 +4,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.stb.STBImage.*
 
-class Texture(val filePath: String) {
+class Texture(private val filePath: String) {
 
     val id: Int = glGenTextures()
 
@@ -58,7 +58,7 @@ class Texture(val filePath: String) {
     fun getHeight() = height
 
     companion object {
-        const val PETER_SPRITE = "assets/textures/peter_sprite.png"
+        const val PETER_SPRITE = "assets/textures/peter_sprite2.png"
         const val PETER = "assets/textures/peter.png"
     }
 }

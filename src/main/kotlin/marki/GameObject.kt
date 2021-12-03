@@ -4,7 +4,8 @@ import util.extensions.findByClass
 
 class GameObject(
     val name: String,
-    var transform: Transform = Transform()
+    var transform: Transform = Transform(),
+    private var zIndex:Int = 0
 ) {
 
     private val components = mutableListOf<Component>()
@@ -31,4 +32,6 @@ class GameObject(
     fun start(){
         components.forEach { it.start() }
     }
+
+    fun zIndex() = zIndex
 }

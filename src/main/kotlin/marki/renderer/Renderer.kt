@@ -16,7 +16,7 @@ class Renderer {
     private fun add(sprite: SpriteRenderer) {
         var added = false
         batches.forEach { batch ->
-            if(batch.hasRoom()) {
+            if(batch.hasRoom() && batch.zIndex() == sprite.gameObject.zIndex()) {
                 val texture = sprite.getTexture()
                 if(batch.hasTextureRoom() || batch.hasTexture(texture)){
                     batch.addSprite(sprite)
@@ -26,10 +26,11 @@ class Renderer {
         }
 
         if(!added) {
-            val newBatch = RenderBatch(MAX_BATCH_SIZE)
+            val newBatch = RenderBatch(MAX_BATCH_SIZE, sprite.gameObject.zIndex())
             newBatch.start()
             batches.add(newBatch)
             newBatch.addSprite(sprite)
+            batches.sort()
         }
     }
 

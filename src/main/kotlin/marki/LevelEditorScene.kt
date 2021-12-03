@@ -1,10 +1,12 @@
 package marki
 
+import components.Sprite
 import components.SpriteRenderer
 import components.SpriteSheet
 import marki.renderer.Shader
 import marki.renderer.Texture
 import org.joml.Vector2f
+import org.joml.Vector4f
 import util.AssetPool
 
 class LevelEditorScene : Scene() {
@@ -12,16 +14,21 @@ class LevelEditorScene : Scene() {
     override var camera: Camera = Camera(Vector2f(-250f, 0f))
 
     lateinit var sprites:SpriteSheet
-    private val go1 = GameObject("ob1", Transform(Vector2f(0f, 100f), Vector2f(256f, 256f)))
+    val scale = 256
+    private val go1 = GameObject("ob1", Transform(Vector2f(0f, 100f), Vector2f(scale.toFloat(), scale.toFloat())), 0)
 
 
     override fun init() {
         loadResources()
 
-        sprites = AssetPool.getSpriteSheet(Texture.PETER_SPRITE)!!
+        AssetPool.getSpriteSheet(Texture.PETER_SPRITE)?.let { sprites = it }
 
-        go1.addComponent(SpriteRenderer(sprites!!.getSprite(spriteIndex)))
+        go1.addComponent(SpriteRenderer(sprites.getSprite(spriteIndex)))
         addGameObjectToScene(go1)
+
+        val go2 = GameObject("obj2", Transform(Vector2f(-100f, 200f), Vector2f(scale.toFloat(), scale.toFloat())), 1)
+        go2.addComponent(SpriteRenderer(Vector4f(1f, 0f, 0f, 0.25f)))
+        addGameObjectToScene(go2)
     }
 
     private fun loadResources() {
@@ -37,7 +44,7 @@ class LevelEditorScene : Scene() {
     private var spriteFlipTimeLeft = spriteFlipTime
 
     override fun update(dt: Float) {
-        println("FPS: ${1.0f / dt}")
+        //println("FPS: ${1.0f / dt}")
 
         spriteFlipTimeLeft -= dt
         if(spriteFlipTimeLeft < 0f) {
@@ -47,7 +54,7 @@ class LevelEditorScene : Scene() {
             go1.getComponent(SpriteRenderer::class.java)?.setSprite(sprites.getSprite(spriteIndex + 1))
         }
 
-        go1.transform.position.x += 150 * dt
+        //go1.transform.position.x += 150 * dt
 
         gameObjects.forEach { it.update(dt) }
         renderer.render()

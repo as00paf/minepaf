@@ -6,20 +6,22 @@ import org.joml.Vector2f
 import org.joml.Vector4f
 
 class SpriteRenderer(
-    private var sprite: Sprite,
+    private var sprite: Sprite = Sprite(null),
     private var color: Vector4f = Vector4f(1f, 1f, 1f, 1f)
 ) : Component() {
+
+    constructor(color: Vector4f): this(Sprite(), color)
 
     private var lastTransform: Transform = Transform()
     private var isDirty = true
 
     override fun start() {
-        gameObject?.transform?.copy()?.let { this.lastTransform = it }
+        this.lastTransform = gameObject.transform.copy()
     }
 
     override fun update(dt: Float) {
-        if(lastTransform != gameObject?.transform && gameObject?.transform != null) {
-            gameObject?.transform?.copy(lastTransform)
+        if(lastTransform != gameObject.transform) {
+            gameObject.transform.copy(lastTransform)
             isDirty = true
         }
     }
