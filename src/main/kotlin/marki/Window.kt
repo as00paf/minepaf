@@ -1,7 +1,11 @@
 package marki
 
+import imgui.gl3.ImGuiImplGl3
+import imgui.ImGui
+import imgui.flag.ImGuiConfigFlags
+import imgui.glfw.ImGuiImplGlfw
+import marki.renderer.ImGuiLayer
 import org.lwjgl.Version
-import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -24,6 +28,12 @@ object Window {
     private var b = 1.0f
     private var a = 1.0f
 
+    // Im GUI
+    val imGuiGlfw = ImGuiImplGlfw()
+    val imGuiGl3 = ImGuiImplGl3()
+    var glslVersion = "#version 130"
+    val imGuiLayer = ImGuiLayer()
+
     fun get(): Window = this
 
     fun run() {
@@ -40,7 +50,15 @@ object Window {
         glfwSetErrorCallback(null)?.free()
     }
 
-    private fun init() {
+    private fun init(){
+        initWindow()
+        initImGui()
+        imGuiGlfw.init(glfwWindow, true)
+        imGuiGl3.init(glslVersion)
+    }
+
+
+    private fun initWindow() {
         // Error callback
         GLFWErrorCallback.createPrint(System.err).set()
 
@@ -51,6 +69,8 @@ object Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE)
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0)
 
         // Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL)
@@ -80,6 +100,10 @@ object Window {
         changeScene(0)
     }
 
+    private fun initImGui() {
+        ImGui.createContext()
+    }
+
     fun loop(){
         var beginTime = Time.getTime()
         var endTime = Time.getTime()
@@ -93,11 +117,30 @@ object Window {
 
             if( dt > 0 ) currentScene.update(dt)
 
+            renderImGui()
+
             glfwSwapBuffers(glfwWindow)
 
             endTime = Time.getTime()
             dt = endTime - beginTime
             beginTime = endTime
+        }
+    }
+
+    private fun renderImGui() {
+        imGuiGlfw.newFrame()
+        ImGui.newFrame()
+
+        imGuiLayer.imGui()
+
+        ImGui.render()
+        imGuiGl3.renderDrawData(ImGui.getDrawData())
+
+        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            val backupWindowPtr = glfwGetCurrentContext();
+            ImGui.updatePlatformWindows();
+            ImGui.renderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backupWindowPtr);
         }
     }
 
@@ -115,4 +158,14 @@ object Window {
     }
 
     fun getScene(): Scene = currentScene
+    fun getWindowId() = glfwWindow
+
+    fun destroy(){
+        imGuiGl3.dispose()
+        imGuiGlfw.dispose()
+        ImGui.destroyContext()
+        glfwFreeCallbacks(glfwWindow)
+        glfwDestroyWindow(glfwWindow)
+        glfwTerminate()
+    }
 }
