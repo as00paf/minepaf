@@ -1,5 +1,6 @@
 package components
 
+import imgui.internal.ImGui
 import marki.Component
 import marki.Transform
 import org.joml.Vector2f
@@ -12,8 +13,8 @@ class SpriteRenderer(
 
     constructor(color: Vector4f): this(Sprite(), color)
 
-    private var lastTransform: Transform = Transform()
-    private var isDirty = true
+    @Transient private var lastTransform: Transform = Transform()
+    @Transient private var isDirty = true
 
     override fun start() {
         this.lastTransform = gameObject.transform.copy()
@@ -22,6 +23,15 @@ class SpriteRenderer(
     override fun update(dt: Float) {
         if(lastTransform != gameObject.transform) {
             gameObject.transform.copy(lastTransform)
+            isDirty = true
+        }
+    }
+
+    override fun imgui() {
+        super.imgui()
+        val imColor = floatArrayOf(color.x, color.y, color.z, color.w)
+        if(ImGui.colorPicker4("Color Picker: ${gameObject.name}", imColor)){
+            color.set(imColor[0], imColor[1], imColor[2], imColor[3])
             isDirty = true
         }
     }

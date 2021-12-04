@@ -1,8 +1,10 @@
 package marki
 
-import components.Sprite
+import com.google.gson.GsonBuilder
+import components.RigidBody
 import components.SpriteRenderer
 import components.SpriteSheet
+import imgui.ImGui
 import marki.renderer.Shader
 import marki.renderer.Texture
 import org.joml.Vector2f
@@ -13,17 +15,22 @@ class LevelEditorScene : Scene() {
 
     override var camera: Camera = Camera(Vector2f(-250f, 0f))
 
-    lateinit var sprites:SpriteSheet
+    lateinit var sprites: SpriteSheet
     val scale = 256
     private val go1 = GameObject("ob1", Transform(Vector2f(0f, 100f), Vector2f(scale.toFloat(), scale.toFloat())), 0)
 
 
     override fun init() {
         loadResources()
+        if(levelLoaded) {
+            activeGameObject = gameObjects[0]
+            return
+        }
 
         AssetPool.getSpriteSheet(Texture.PETER_SPRITE)?.let { sprites = it }
 
         go1.addComponent(SpriteRenderer(sprites.getSprite(spriteIndex)))
+        go1.addComponent(RigidBody())
         addGameObjectToScene(go1)
 
         val go2 = GameObject("obj2", Transform(Vector2f(-100f, 200f), Vector2f(scale.toFloat(), scale.toFloat())), 1)
@@ -47,10 +54,10 @@ class LevelEditorScene : Scene() {
         //println("FPS: ${1.0f / dt}")
 
         spriteFlipTimeLeft -= dt
-        if(spriteFlipTimeLeft < 0f) {
+        if (spriteFlipTimeLeft < 0f) {
             spriteFlipTimeLeft = spriteFlipTime
             spriteIndex++
-            if(spriteIndex > 5) spriteIndex = 0
+            if (spriteIndex > 5) spriteIndex = 0
             go1.getComponent(SpriteRenderer::class.java)?.setSprite(sprites.getSprite(spriteIndex + 1))
         }
 
@@ -58,6 +65,10 @@ class LevelEditorScene : Scene() {
 
         gameObjects.forEach { it.update(dt) }
         renderer.render()
+    }
+
+    override fun imgui() {
+
     }
 
     override fun camera(): Camera = camera

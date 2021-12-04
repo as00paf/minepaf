@@ -1,0 +1,121 @@
+[
+  {
+    "components": [
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "texture": {
+              "id": 1,
+              "width": 1300,
+              "height": 200,
+              "filePath": "assets/textures/peter_sprite2.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.3846154,
+                "y": 1.0
+              },
+              {
+                "x": 0.3846154,
+                "y": 0.5
+              },
+              {
+                "x": 0.30769232,
+                "y": 0.5
+              },
+              {
+                "x": 0.30769232,
+                "y": 1.0
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          }
+        }
+      },
+      {
+        "type": "components.RigidBody",
+        "properties": {
+          "colliderType": 237,
+          "friction": 0.8,
+          "velocity": {
+            "x": 21.0,
+            "y": 53.5,
+            "z": 53.0
+          },
+          "isHitting": false,
+          "tmp": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+          }
+        }
+      }
+    ],
+    "name": "ob1",
+    "transform": {
+      "position": {
+        "x": 0.0,
+        "y": 100.0
+      },
+      "scale": {
+        "x": 256.0,
+        "y": 256.0
+      }
+    },
+    "zIndex": 0
+  },
+  {
+    "components": [
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 1.0
+              },
+              {
+                "x": 1.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "color": {
+            "x": 0.8301887,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.25
+          }
+        }
+      }
+    ],
+    "name": "obj2",
+    "transform": {
+      "position": {
+        "x": -100.0,
+        "y": 200.0
+      },
+      "scale": {
+        "x": 256.0,
+        "y": 256.0
+      }
+    },
+    "zIndex": 1
+  }
+]

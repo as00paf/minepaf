@@ -34,4 +34,10 @@ class GameObject(
     }
 
     fun zIndex() = zIndex
+
+    fun imgui() {
+        components.forEach {
+            it.imgui()
+        }
+    }
 }
