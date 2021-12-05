@@ -65,6 +65,7 @@ import org.lwjgl.glfw.GLFW.glfwGetClipboardString
 import imgui.callback.ImStrSupplier
 
 import imgui.callback.ImStrConsumer
+import marki.renderer.DebugDraw
 import org.lwjgl.glfw.*
 
 import org.lwjgl.glfw.GLFW.glfwSetScrollCallback
@@ -318,10 +319,15 @@ object Window {
         while(!glfwWindowShouldClose(glfwWindow)) {
             glfwPollEvents()
 
+            DebugDraw.beginFrame()
+
             glClearColor(r, g, b, a)
             glClear(GL_COLOR_BUFFER_BIT)
 
-            if( dt > 0 ) currentScene.update(dt)
+            if( dt > 0 ) {
+                DebugDraw.draw()
+                currentScene.update(dt)
+            }
 
             renderImGui(dt, currentScene)
 
