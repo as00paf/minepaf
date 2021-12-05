@@ -1,7 +1,5 @@
 package components
 
-import marki.Component
-
 class FontRenderer: Component() {
 
     override fun start() {

@@ -30,6 +30,9 @@ class SpriteSheet(
             )
 
             val sprite = Sprite(texture, textCoords)
+            sprite.width = spriteWidth.toFloat()
+            sprite.height = spriteHeight.toFloat()
+
             sprites.add(sprite)
 
             currentX += spriteWidth + spacing
@@ -41,4 +44,6 @@ class SpriteSheet(
     }
 
     fun getSprite(index: Int) = sprites[index]
+
+    fun size():Int = sprites.size
 }

@@ -3,7 +3,6 @@ package marki
 import imgui.ImFontConfig
 import imgui.gl3.ImGuiImplGl3
 import imgui.ImGui
-import imgui.ImGuiIO
 import imgui.flag.ImGuiBackendFlags
 import imgui.flag.ImGuiConfigFlags
 import imgui.flag.ImGuiMouseCursor
@@ -84,8 +83,6 @@ import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1
 
 import org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback
 
-import org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE
-
 import org.lwjgl.glfw.GLFW.glfwSetCharCallback
 
 import org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SUPER
@@ -107,6 +104,8 @@ import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_CONTROL
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
 
 import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
+import scenes.LevelEditorScene
+import scenes.Scene
 
 
 object Window {
@@ -253,6 +252,10 @@ object Window {
             io.keyShift = io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT)
             io.keyAlt = io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT)
             io.keySuper = io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER)
+
+            if(!io.wantCaptureKeyboard) {
+                KeyListener.keyCallback(w, key, scancode, action, mods)
+            }
         }
 
         glfwSetCharCallback(glfwWindow) { w: Long, c: Int ->
@@ -271,6 +274,10 @@ object Window {
             io.setMouseDown(mouseDown)
             if (!io.wantCaptureMouse && mouseDown[1]) {
                 ImGui.setWindowFocus(null)
+            }
+
+            if(!io.wantCaptureMouse){
+                MouseListener.mouseButtonCallback(w, button, action, mods)
             }
         }
 
@@ -305,7 +312,7 @@ object Window {
 
     fun loop(){
         var beginTime = Time.getTime()
-        var endTime = Time.getTime()
+        var endTime:Float
         var dt = -1.0f
 
         while(!glfwWindowShouldClose(glfwWindow)) {
@@ -363,6 +370,8 @@ object Window {
 
     fun getScene(): Scene = currentScene
     fun getWindowId() = glfwWindow
+    fun getWidth() = width
+    fun getHeight() = height
 
     fun destroy(){
         imGuiGl3.dispose()

@@ -1,7 +1,8 @@
 package marki
 
-import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.*
+import org.joml.Vector4f
+import org.lwjgl.glfw.GLFW.GLFW_PRESS
+import org.lwjgl.glfw.GLFW.GLFW_RELEASE
 
 object MouseListener {
     fun get(): MouseListener = this
@@ -13,7 +14,7 @@ object MouseListener {
     private var lastX: Double = 0.0
     private var lastY: Double = 0.0
     private var isDragging = false
-    private var mouseButtonPressed = BooleanArray(3)
+    private var mouseButtonPressed = BooleanArray(9)
 
     fun mousePosCallback(window: Long, xpos: Double, ypos: Double) {
         this.lastX = this.xPos
@@ -25,9 +26,9 @@ object MouseListener {
     }
 
     fun mouseButtonCallback(window: Long, button: Int, action: Int, mods: Int) {
-        if(action == GLFW_PRESS){
+        if (action == GLFW_PRESS) {
             this.mouseButtonPressed[button] = true
-        }else if(action == GLFW_RELEASE) {
+        } else if (action == GLFW_RELEASE) {
             this.mouseButtonPressed[button] = false
             this.isDragging = false
         }
@@ -45,15 +46,35 @@ object MouseListener {
         this.lastY = this.yPos
     }
 
-    fun getX():Float = xPos.toFloat()
-    fun getY():Float = yPos.toFloat()
-    fun getDx():Float = (lastX - xPos).toFloat()
-    fun getDy():Float = (lastY - yPos).toFloat()
+    fun getOrthoX(): Float {
+        var currentX = getX()
+        currentX = (currentX / Window.getWidth()) * 2f - 1f
+        val temp = Vector4f(currentX, 0f, 0f, 1f)
+        temp.mul(Window.getScene().camera().getInverseProjection()).mul(Window.getScene().camera().getInverseView())
+        currentX = temp.x
+
+        return currentX
+    }
+
+    fun getOrthoY(): Float {
+        var currentY = Window.getHeight() - getY()
+        currentY = (currentY / Window.getHeight()) * 2f - 1f
+        val temp = Vector4f(0f, currentY, 0f, 1f)
+        temp.mul(Window.getScene().camera().getInverseProjection()).mul(Window.getScene().camera().getInverseView())
+        currentY = temp.y
+
+        return currentY
+    }
+
+    fun getX(): Float = xPos.toFloat()
+    fun getY(): Float = yPos.toFloat()
+    fun getDx(): Float = (lastX - xPos).toFloat()
+    fun getDy(): Float = (lastY - yPos).toFloat()
     fun getScrollX(): Float = scrollX.toFloat()
     fun getScrollY(): Float = scrollY.toFloat()
     fun isDragging() = isDragging
     fun isMouseButtonDown(button: Int): Boolean {
-        return if(button < mouseButtonPressed.size) mouseButtonPressed[button]
+        return if (button < mouseButtonPressed.size) mouseButtonPressed[button]
         else false
     }
 }

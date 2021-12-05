@@ -59,6 +59,7 @@ class Texture(private val filePath: String) {
 
     companion object {
         const val PETER_SPRITE = "assets/textures/peter_sprite2.png"
+        const val BLOCKS_DECOS_SPRITE = "assets/textures/blocksAndDecorations.png"
         const val PETER = "assets/textures/peter.png"
     }
 }

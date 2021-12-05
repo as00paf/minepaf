@@ -1,5 +1,6 @@
 package marki
 
+import components.Component
 import util.extensions.findByClass
 
 class GameObject(
@@ -7,6 +8,15 @@ class GameObject(
     var transform: Transform = Transform(),
     private var zIndex:Int = 0
 ) {
+    companion object {
+        private var ID_COUNTER: Int = 0
+
+        fun init(maxId: Int) {
+            ID_COUNTER = maxId
+        }
+    }
+
+    private var uId = ID_COUNTER++
 
     private val components = mutableListOf<Component>()
 
@@ -21,6 +31,7 @@ class GameObject(
     }
 
     fun addComponent(component: Component){
+        component.generateId()
         components.add(component)
         component.gameObject = this
     }
@@ -40,4 +51,8 @@ class GameObject(
             it.imgui()
         }
     }
+
+    fun getUid() = uId
+
+    fun getAllComponents(): List<Component> = components
 }
