@@ -127,9 +127,19 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Compar
         var offset = index * 4 * VERTEX_SIZE
         val color = sprite.getColor()
 
-        val texId = sprite.getTexture().let { sprTex ->
+        var texId = sprite.getTexture().let { sprTex ->
             if(textures.contains(sprTex)) textures.indexOf(sprTex) + 1
             else 0
+        }
+
+        val spriteTex = sprite.getTexture()
+        if (spriteTex != null) {
+            for (i in textures.indices) {
+                if (textures[i].equals(spriteTex)) {
+                    texId = i + 1
+                    break
+                }
+            }
         }
 
         val texCoords = sprite.getTextCoords()

@@ -2,6 +2,7 @@ package components
 
 import imgui.internal.ImGui
 import marki.Transform
+import marki.renderer.Texture
 import org.joml.Vector2f
 import org.joml.Vector4f
 
@@ -36,9 +37,12 @@ class SpriteRenderer(
     }
 
     fun getColor() = color
-    fun getTexture() = sprite.getTexture()
     fun getTextCoords(): Array<Vector2f> = sprite.getTexCoords()
     fun isDirty() = isDirty
+    fun getTexture() = sprite.getTexture()
+    fun setTexture(tex: Texture) {
+        sprite.setTexture(tex)
+    }
 
     fun setSprite(sprite:Sprite) {
         this.sprite = sprite

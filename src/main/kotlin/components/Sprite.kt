@@ -16,9 +16,12 @@ class Sprite(
     var width: Float = 0f
     var height: Float = 0f
 
-    fun getTexture() = texture
     fun getTexCoords() = texCoords
-    fun getTexId() = texture?.id ?: -1
+    fun getTexId() = texture?.getId() ?: -1
+    fun getTexture() = texture
+    fun setTexture(tex: Texture) {
+        texture = tex
+    }
 
 
 }

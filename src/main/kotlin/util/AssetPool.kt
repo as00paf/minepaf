@@ -27,7 +27,7 @@ object AssetPool {
         return if(textures.containsKey(file.absolutePath)) {
             textures[file.absolutePath]!!
         } else{
-            val texture = Texture(resourceName)
+            val texture = Texture().init(resourceName)
             textures[file.absolutePath] = texture
             texture
         }

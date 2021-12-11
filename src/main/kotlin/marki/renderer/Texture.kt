@@ -4,14 +4,30 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.stb.STBImage.*
 
-class Texture(private val filePath: String) {
+class Texture {
 
-    val id: Int = glGenTextures()
+    @Transient private var id: Int = 0
 
-    private var width: Int = 0
-    private var height: Int = 0
+    private var width: Int = -1
+    private var height: Int = -1
+    private var filePath: String? = null
 
-    init {
+    fun init(width: Int, height: Int):Texture {
+        this.id = glGenTextures()
+        this.width = width
+        this.height = height
+        this.filePath = "Generated"
+
+        glBindTexture(GL_TEXTURE_2D, id)
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0)
+
+        return this
+    }
+
+    fun init(filePath: String):Texture {
+        this.filePath = filePath
+        this.id = glGenTextures()
         glBindTexture(GL_TEXTURE_2D, id)
 
         // Set params
@@ -44,6 +60,7 @@ class Texture(private val filePath: String) {
         }
 
         stbi_image_free(image!!)
+        return this
     }
 
     fun bind() {
@@ -56,6 +73,18 @@ class Texture(private val filePath: String) {
 
     fun getWidth() = width
     fun getHeight() = height
+    fun getFilePath() = filePath
+    fun getId() = id
+
+    override fun equals(other: Any?): Boolean {
+        return when (other) {
+            null -> false
+            !is Texture -> false
+            else -> {
+                other.width == width && other.height == height && other.id == id && other.filePath == filePath
+            }
+        }
+    }
 
     companion object {
         const val PETER_SPRITE = "assets/textures/peter_sprite2.png"
