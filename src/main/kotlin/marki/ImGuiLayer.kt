@@ -102,7 +102,7 @@ class ImGuiLayer() {
                 ImGui.setWindowFocus(null)
             }
 
-            if (!io.wantCaptureMouse) {
+            if (!io.wantCaptureMouse || GameViewWindow.getWantCaptureMouse()) {
                 MouseListener.mouseButtonCallback(w, button, action, mods)
             }
         }

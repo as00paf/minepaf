@@ -1,12 +1,16 @@
 package marki
 
+import marki.Window.getScene
+import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
 import org.lwjgl.glfw.GLFW.GLFW_RELEASE
+import org.joml.Matrix4f
+
+
+
 
 object MouseListener {
-    fun get(): MouseListener = this
-
     private var scrollX: Double = 0.0
     private var scrollY: Double = 0.0
     private var xPos: Double = 0.0
@@ -15,6 +19,8 @@ object MouseListener {
     private var lastY: Double = 0.0
     private var isDragging = false
     private var mouseButtonPressed = BooleanArray(9)
+    private val gameViewportPos = Vector2f()
+    private val gameViewportSize = Vector2f()
 
     fun mousePosCallback(window: Long, xpos: Double, ypos: Double) {
         this.lastX = this.xPos
@@ -46,22 +52,38 @@ object MouseListener {
         this.lastY = this.yPos
     }
 
+    fun setGameViewportPos(pos: Vector2f) {
+        gameViewportPos.set(pos)
+    }
+
+    fun setGameViewportSize(size: Vector2f) {
+        gameViewportSize.set(size)
+    }
+
     fun getOrthoX(): Float {
-        var currentX = getX()
-        currentX = (currentX / Window.getWidth()) * 2f - 1f
-        val temp = Vector4f(currentX, 0f, 0f, 1f)
-        temp.mul(Window.getScene().camera().getInverseProjection()).mul(Window.getScene().camera().getInverseView())
-        currentX = temp.x
+        var currentX = getX() - gameViewportPos.x
+        currentX = currentX / gameViewportSize.x * 2.0f - 1.0f
+        val tmp = Vector4f(currentX, 0f, 0f, 1f)
+
+        val camera = getScene().camera()
+        val viewProjection = Matrix4f()
+        camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
+        tmp.mul(viewProjection)
+        currentX = tmp.x
 
         return currentX
     }
 
     fun getOrthoY(): Float {
-        var currentY = Window.getHeight() - getY()
-        currentY = (currentY / Window.getHeight()) * 2f - 1f
-        val temp = Vector4f(0f, currentY, 0f, 1f)
-        temp.mul(Window.getScene().camera().getInverseProjection()).mul(Window.getScene().camera().getInverseView())
-        currentY = temp.y
+        var currentY = getY() - gameViewportPos.y
+        currentY = -(currentY / gameViewportSize.y * 2.0f - 1.0f)
+        val tmp = Vector4f(0f, currentY, 0f, 1f)
+
+        val camera = getScene().camera()
+        val viewProjection = Matrix4f()
+        camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
+        tmp.mul(viewProjection)
+        currentY = tmp.y
 
         return currentY
     }
