@@ -1,5 +1,6 @@
 package marki
 
+import editor.GameViewWindow
 import imgui.ImFontConfig
 import imgui.ImGui
 import imgui.callback.ImStrConsumer
@@ -138,6 +139,7 @@ class ImGuiLayer() {
     fun imGui(dt: Float, currentScene: Scene) {
         setupDockSpace()
         currentScene.sceneImgui()
+        GameViewWindow.imgui()
         ImGui.end()
         ImGui.render()
     }

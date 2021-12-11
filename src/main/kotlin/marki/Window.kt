@@ -109,6 +109,7 @@ object Window {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
 
         frameBuffer = FrameBuffer(1920, 1080)
+        glViewport(0, 0, 1920, 1080)
 
         changeScene(0)
     }
@@ -123,10 +124,10 @@ object Window {
 
             DebugDraw.beginFrame()
 
+            frameBuffer.bind()
             glClearColor(r, g, b, a)
             glClear(GL_COLOR_BUFFER_BIT)
 
-            //frameBuffer.bind()
             if (dt > 0) {
                 DebugDraw.draw()
                 currentScene.update(dt)
@@ -181,6 +182,7 @@ object Window {
     fun getWindowId() = glfwWindow
     fun getWidth() = width
     fun getHeight() = height
+    fun getTargetAspectRatio() = 16f / 9f
 
     fun destroy() {
         imGuiGl3.dispose()
