@@ -1,6 +1,5 @@
 package marki.renderer
 
-import components.Sprite
 import components.SpriteRenderer
 import marki.Window
 import org.lwjgl.opengl.GL15.*
@@ -9,18 +8,16 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20C.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.glBindVertexArray
 import org.lwjgl.opengl.GL30.glGenVertexArrays
-import util.AssetPool
 
-class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Comparable<RenderBatch> {
+class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comparable<RenderBatch> {
     // Vertex
     // ======
-    // Pos                  Color                                   Text coords         texId
-    // float, float,        float, float, float, float, float,      float, float,       float
+    // Pos                  Color                                   Text coords         texId       entityId
+    // float, float,        float, float, float, float, float,      float, float,       float       float
     private val sprites = arrayOfNulls<SpriteRenderer>(maxBatchSize)
     private var spriteCount = 0
     private var hasRoom = true
     private var vertices = FloatArray(maxBatchSize * 4 * VERTEX_SIZE)
-    private var shader: Shader = AssetPool.getShader(Shader.DEFAULT)
     private var vaoId = -1
     private var vboId = -1
     private val textures = mutableListOf<Texture>()
@@ -54,16 +51,19 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Compar
 
         glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, TEX_ID_OFFSET.toLong())
         glEnableVertexAttribArray(3)
+
+        glVertexAttribPointer(4, ENTITY_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, ENTITY_ID_OFFSET.toLong())
+        glEnableVertexAttribArray(4)
     }
 
     fun addSprite(sprite: SpriteRenderer) {
         // Get index and add renderObject
         val index = spriteCount
         sprites[index] = sprite
-        spriteCount ++
+        spriteCount++
 
         sprite.getTexture()?.let { spriteTexture ->
-            if(!textures.contains(spriteTexture)) {
+            if (!textures.contains(spriteTexture)) {
                 textures.add(spriteTexture)
             }
         }
@@ -71,28 +71,29 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Compar
         // Add properties to local vertices array
         loadVertexProperties(index)
 
-        if(spriteCount >= maxBatchSize) {
+        if (spriteCount >= maxBatchSize) {
             hasRoom = false
         }
     }
 
     fun render() {
         var rebufferData = false
-        for(index in 0..spriteCount) {
+        for (index in 0..spriteCount) {
             val sprite = sprites[index]
-            if(sprite?.isDirty() == true) {
+            if (sprite?.isDirty() == true) {
                 loadVertexProperties(index)
                 sprite.setClean()
                 rebufferData = true
             }
         }
 
-        if(rebufferData){
+        if (rebufferData) {
             glBindBuffer(GL_ARRAY_BUFFER, vboId)
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices)
         }
 
         // Use shader
+        val shader = Renderer.getBoundShader()
         shader.use()
         shader.uploadMat4f("uProjection", Window.getScene().camera().getProjectionMatrix())
         shader.uploadMat4f("uView", Window.getScene().camera().getViewMatrix())
@@ -128,7 +129,7 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Compar
         val color = sprite.getColor()
 
         var texId = sprite.getTexture().let { sprTex ->
-            if(textures.contains(sprTex)) textures.indexOf(sprTex) + 1
+            if (textures.contains(sprTex)) textures.indexOf(sprTex) + 1
             else 0
         }
 
@@ -147,7 +148,7 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Compar
         // Add vertices with the appropriate properties
         var xAdd = 1.0f
         var yAdd = 1.0f
-        for(i in 0 until 4) {
+        for (i in 0 until 4) {
             when (i) {
                 1 -> yAdd = 0f
                 2 -> xAdd = 0f
@@ -172,13 +173,16 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex:Int): Compar
             // Load tex id
             vertices[offset + 8] = texId.toFloat()
 
+            // Load entity id
+            vertices[offset + 9] = sprite.gameObject.getUid().toFloat()
+
             offset += VERTEX_SIZE
         }
     }
 
     private fun generateIndices(): IntArray {
         val elements = IntArray(6 * maxBatchSize)
-        for(index in 0 until maxBatchSize){
+        for (index in 0 until maxBatchSize) {
             loadElementIndices(elements, index)
         }
 
@@ -218,9 +222,11 @@ const val POS_SIZE = 2
 const val COLOR_SIZE = 4
 const val TEX_COORDS_SIZE = 2
 const val TEX_ID_SIZE = 1
+const val ENTITY_ID_SIZE = 1
 const val POS_OFFSET = 0
 const val COLOR_OFFSET: Int = POS_OFFSET + POS_SIZE * Float.SIZE_BYTES
 const val TEX_COORDS_OFFSET = COLOR_OFFSET + COLOR_SIZE * Float.SIZE_BYTES
 const val TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.SIZE_BYTES
-const val VERTEX_SIZE = 9
+const val ENTITY_ID_OFFSET = TEX_ID_OFFSET + TEX_ID_SIZE * Float.SIZE_BYTES
+const val VERTEX_SIZE = 10
 const val VERTEX_SIZE_BYTES: Int = VERTEX_SIZE * Float.SIZE_BYTES

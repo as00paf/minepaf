@@ -1,6 +1,7 @@
 package marki
 
 import editor.GameViewWindow
+import editor.PropertiesWindow
 import imgui.ImFontConfig
 import imgui.ImGui
 import imgui.callback.ImStrConsumer
@@ -15,9 +16,13 @@ import imgui.flag.ImGuiWindowFlags
 import imgui.flag.ImGuiStyleVar
 
 import imgui.flag.ImGuiCond
+import marki.renderer.PickingTexture
 
 
-class ImGuiLayer() {
+class ImGuiLayer(private val pickingTexture: PickingTexture) {
+
+    private val gameViewWindow = GameViewWindow()
+    private val propertiesWindow = PropertiesWindow(pickingTexture)
 
     fun init(glfwWindow: Long) {
         ImGui.createContext()
@@ -102,7 +107,7 @@ class ImGuiLayer() {
                 ImGui.setWindowFocus(null)
             }
 
-            if (!io.wantCaptureMouse || GameViewWindow.getWantCaptureMouse()) {
+            if (!io.wantCaptureMouse || gameViewWindow.getWantCaptureMouse()) {
                 MouseListener.mouseButtonCallback(w, button, action, mods)
             }
         }
@@ -138,8 +143,10 @@ class ImGuiLayer() {
 
     fun imGui(dt: Float, currentScene: Scene) {
         setupDockSpace()
-        currentScene.sceneImgui()
-        GameViewWindow.imgui()
+        currentScene.imgui()
+        gameViewWindow.imgui()
+        propertiesWindow.update(dt, currentScene)
+        propertiesWindow.imgui()
         ImGui.end()
         ImGui.render()
     }

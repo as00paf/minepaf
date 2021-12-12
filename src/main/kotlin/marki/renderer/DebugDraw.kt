@@ -51,9 +51,9 @@ object DebugDraw {
         }
 
         // Remove dead lines
-        println("Line count before removing: ${lines.size}")
+        //println("Line count before removing: ${lines.size}")
         lines.removeIf { it.beginFrame() < 0 }
-        println("Line count after removing: ${lines.size}")
+        //println("Line count after removing: ${lines.size}")
     }
 
     fun draw() {

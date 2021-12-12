@@ -35,6 +35,19 @@ class Renderer {
     }
 
     fun render() {
+        currentShader.use()
         batches.forEach { it.render() }
+    }
+
+    companion object {
+        lateinit var currentShader: Shader
+
+        fun getBoundShader():Shader {
+            return currentShader
+        }
+
+        fun bindShader(shader: Shader) {
+            currentShader = shader
+        }
     }
 }

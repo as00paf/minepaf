@@ -7,7 +7,7 @@ import marki.MouseListener
 import marki.Window
 import org.joml.Vector2f
 
-object GameViewWindow {
+class GameViewWindow {
 
     private var leftX = 0f
     private var rightX = 0f

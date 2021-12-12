@@ -188,6 +188,7 @@ class Shader(val filePath: String) {
 
     companion object {
         const val DEFAULT = "assets/shaders/default.glsl"
+        const val PICKING = "assets/shaders/picking.glsl"
         const val DEBUG = "assets/shaders/debugLine2D.glsl"
     }
 }

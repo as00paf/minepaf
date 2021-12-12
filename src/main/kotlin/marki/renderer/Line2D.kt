@@ -21,4 +21,8 @@ class Line2D(
     override fun toString(): String {
         return "Line2D: [from: ${from.x}, ${from.y}, to: ${to.x}, ${to.y}]"
     }
+
+    fun lengthSquared(): Float {
+        return Vector2f(to).sub(from).lengthSquared()
+    }
 }

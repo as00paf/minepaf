@@ -88,6 +88,20 @@ object MouseListener {
         return currentY
     }
 
+    fun getScreenX(): Float {
+        var currentX = getX() - gameViewportPos.x
+        currentX = (currentX / gameViewportSize.x) * 1920
+
+        return currentX
+    }
+
+    fun getScreenY(): Float {
+        var currentY = getY() - gameViewportPos.y
+        currentY = 1080 - ((currentY / gameViewportSize.y) * 1080)
+
+        return currentY
+    }
+
     fun getX(): Float = xPos.toFloat()
     fun getY(): Float = yPos.toFloat()
     fun getDx(): Float = (lastX - xPos).toFloat()

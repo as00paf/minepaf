@@ -18,8 +18,7 @@ abstract class Scene {
     protected abstract var camera: Camera
     protected val gameObjects = mutableListOf<GameObject>()
     protected var isRunning = false
-    protected val renderer = Renderer()
-    protected var activeGameObject: GameObject? = null
+    val renderer = Renderer()
 
     var saveOnExit: Boolean = false
     protected var levelLoaded = false
@@ -49,19 +48,14 @@ abstract class Scene {
         }
     }
 
+    fun getGameObject(id: Int): GameObject? {
+        return gameObjects.firstOrNull { it.getUid() == id }
+    }
+
     abstract fun update(dt: Float)
+    abstract fun render()
 
     abstract fun camera(): Camera
-
-    fun sceneImgui() {
-        if(activeGameObject != null) {
-            ImGui.begin("Inspector")
-            activeGameObject?.imgui()
-            ImGui.end()
-        }
-
-        imgui()
-    }
 
     open fun imgui() {
 
@@ -106,8 +100,8 @@ abstract class Scene {
 
             maxGoId++
             maxCompId++
-            println(maxGoId)
-            println(maxCompId)
+            //println(maxGoId)
+            //println(maxCompId)
             GameObject.init(maxGoId)
             Component.init(maxCompId)
 

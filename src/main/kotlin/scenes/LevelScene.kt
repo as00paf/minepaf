@@ -15,5 +15,9 @@ class LevelScene: Scene() {
 
     }
 
+    override fun render() {
+        TODO("Not yet implemented")
+    }
+
     override fun camera(): Camera = camera
 }

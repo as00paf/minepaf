@@ -1,17 +1,11 @@
 package marki
 
-import imgui.ImFontConfig
 import imgui.ImGui
-import imgui.callback.ImStrConsumer
-import imgui.callback.ImStrSupplier
-import imgui.flag.ImGuiBackendFlags
 import imgui.flag.ImGuiConfigFlags
-import imgui.flag.ImGuiKey
 import imgui.flag.ImGuiMouseCursor
 import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
-import marki.renderer.DebugDraw
-import marki.renderer.FrameBuffer
+import marki.renderer.*
 import org.lwjgl.Version
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
@@ -21,6 +15,7 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
 import scenes.LevelEditorScene
 import scenes.Scene
+import util.AssetPool
 import util.Time
 
 
@@ -32,6 +27,7 @@ object Window {
     private var glfwWindow: Long = -1L
     private var currentScene: Scene = LevelEditorScene()
     lateinit var frameBuffer: FrameBuffer
+    lateinit var pickingTexture: PickingTexture
 
     private var r = 1.0f
     private var g = 1.0f
@@ -42,7 +38,7 @@ object Window {
     val imGuiGlfw = ImGuiImplGlfw()
     val imGuiGl3 = ImGuiImplGl3()
     var glslVersion = "#version 130"
-    val imGuiLayer = ImGuiLayer()
+    lateinit var imGuiLayer:ImGuiLayer
     val mouseCursors = arrayOfNulls<Long>(ImGuiMouseCursor.COUNT)
 
     fun get(): Window = this
@@ -63,6 +59,8 @@ object Window {
 
     private fun init() {
         initWindow()
+        pickingTexture = PickingTexture(1920, 1080)
+        imGuiLayer = ImGuiLayer(pickingTexture)
         imGuiLayer.init(glfwWindow)
         imGuiGlfw.init(glfwWindow, true)
         imGuiGl3.init(glslVersion)
@@ -119,9 +117,26 @@ object Window {
         var endTime: Float
         var dt = -1.0f
 
+        val defaultShader = AssetPool.getShader(Shader.DEFAULT)
+        val pickingShader = AssetPool.getShader(Shader.PICKING)
         while (!glfwWindowShouldClose(glfwWindow)) {
             glfwPollEvents()
 
+            // Render pass 1. Render to picking texture
+            glDisable(GL_BLEND)
+            pickingTexture.enableWriting()
+
+            glViewport(0, 0, 1920, 1080)
+            glClearColor(0f, 0f, 0f, 0f)
+            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
+            Renderer.bindShader(pickingShader)
+            currentScene.render()
+
+            pickingTexture.disableWriting()
+            glEnable(GL_BLEND)
+
+            // Render pass 2. Render actual game
             DebugDraw.beginFrame()
 
             frameBuffer.bind()
@@ -130,7 +145,9 @@ object Window {
 
             if (dt > 0) {
                 DebugDraw.draw()
+                Renderer.bindShader(defaultShader)
                 currentScene.update(dt)
+                currentScene.render()
             }
             frameBuffer.unbind()
 

@@ -29,10 +29,6 @@ class LevelEditorScene : Scene() {
         levelEditorStuff.addComponent(GridLines())
 
         loadResources()
-
-        if (levelLoaded) {
-            if (gameObjects.size > 0) activeGameObject = gameObjects[0]
-        }
     }
 
     private fun loadResources() {
@@ -60,10 +56,14 @@ class LevelEditorScene : Scene() {
     }
 
     override fun update(dt: Float) {
-        println("FPS: ${1.0f / dt}")
+        // println("FPS: ${1.0f / dt}")
 
         levelEditorStuff.update(dt)
         gameObjects.forEach { it.update(dt) }
+        render()
+    }
+
+    override fun render() {
         renderer.render()
     }
 
