@@ -115,6 +115,8 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
         GLFW.glfwSetScrollCallback(glfwWindow) { w: Long, xOffset: Double, yOffset: Double ->
             io.mouseWheelH = io.mouseWheelH + xOffset.toFloat()
             io.mouseWheel = io.mouseWheel + yOffset.toFloat()
+
+            MouseListener.mouseScrollCallback(w, xOffset, yOffset)
         }
 
         io.setSetClipboardTextFn(object : ImStrConsumer() {
@@ -143,6 +145,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
     fun imGui(dt: Float, currentScene: Scene) {
         setupDockSpace()
+        ImGui.showDemoWindow()
         currentScene.imgui()
         gameViewWindow.imgui()
         propertiesWindow.update(dt, currentScene)

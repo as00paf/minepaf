@@ -90,7 +90,7 @@ object Window {
         glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback)
         glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback)
 
-        //glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback)
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback)
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow)
@@ -154,6 +154,7 @@ object Window {
             renderImGui(dt, currentScene)
 
             glfwSwapBuffers(glfwWindow)
+            MouseListener.endFrame()
 
             endTime = Time.getTime()
             dt = endTime - beginTime

@@ -11,6 +11,7 @@ class Camera(var position: Vector2f = Vector2f()) {
     private var inverseProjection: Matrix4f = Matrix4f()
     private var inverseView: Matrix4f = Matrix4f()
     private val projectionSize = Vector2f(32f * 40f, 32f * 21f)
+    var zoom = 1f
 
     init {
         adjustProjection()
@@ -18,7 +19,7 @@ class Camera(var position: Vector2f = Vector2f()) {
 
     fun adjustProjection() {
         projectionMatrix.identity()
-        projectionMatrix.ortho(0.0f, projectionSize.x, 0.0f, projectionSize.y, 0.0f, 100.0f)
+        projectionMatrix.ortho(0.0f, projectionSize.x * zoom, 0.0f, projectionSize.y * zoom, 0.0f, 100.0f)
         projectionMatrix.invert(inverseProjection)
     }
 
@@ -33,6 +34,10 @@ class Camera(var position: Vector2f = Vector2f()) {
         )
         viewMatrix.invert(inverseView)
         return viewMatrix
+    }
+
+    fun addZoom(value: Float) {
+        zoom += value
     }
 
     fun getProjectionMatrix(): Matrix4f = projectionMatrix

@@ -10,19 +10,10 @@ import java.lang.Integer.max
 
 class GridLines : Component() {
 
-    val cameraPos = Window.getScene().camera().position
-    val projectionSize = Window.getScene().camera().getProjectionSize()
+    val camera = Window.getScene().camera()
+    val cameraPos = camera.position
+    val projectionSize = camera.getProjectionSize()
 
-    val firstX = ((cameraPos.x / GRID_WIDTH).toInt() -1) * GRID_HEIGHT
-    val firstY = (cameraPos.y / GRID_HEIGHT).toInt() * GRID_HEIGHT
-
-    var numVtLines = (projectionSize.x / GRID_WIDTH).toInt() + 2
-    var numHzLines = (projectionSize.y / GRID_HEIGHT).toInt() + 2
-
-    val height = projectionSize.y.toInt() + GRID_HEIGHT * 2
-    val width = projectionSize.x.toInt() + GRID_WIDTH * 2
-
-    val maxLines = max(numVtLines, numHzLines)
     val defaultColor = Vector3f(0.001f, 0.001f, 0.001f)
 
     override fun imgui() {
@@ -34,6 +25,17 @@ class GridLines : Component() {
     }
 
     private fun drawLines() {
+        val firstX = ((cameraPos.x / GRID_WIDTH).toInt() -1) * GRID_HEIGHT
+        val firstY = (cameraPos.y / GRID_HEIGHT).toInt() * GRID_HEIGHT
+
+        val numVtLines = (projectionSize.x * camera.zoom / GRID_WIDTH).toInt() + 2
+        val numHzLines = (projectionSize.y * camera.zoom  / GRID_HEIGHT).toInt() + 2
+
+        val height = (projectionSize.y * camera.zoom).toInt() + GRID_HEIGHT * 2
+        val width = (projectionSize.x * camera.zoom).toInt() + GRID_WIDTH * 2
+
+        val maxLines = max(numVtLines, numHzLines)
+
         for (i in 0 until maxLines) {
             val x = firstX + GRID_WIDTH * i
             val y = firstY + GRID_HEIGHT * i

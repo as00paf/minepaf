@@ -25,7 +25,7 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
     fun imgui(){
         val go = activeGameObject
         if(go != null) {
-            ImGui.begin("Properties: ${go.name}")
+            ImGui.begin("Properties")
             activeGameObject?.imgui()
             ImGui.end()
         }

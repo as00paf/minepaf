@@ -17,7 +17,7 @@ import kotlin.math.sin
 
 class LevelEditorScene : Scene() {
 
-    override var camera: Camera = Camera(Vector2f(-250f, 0f))
+    override var camera: Camera = Camera(Vector2f(-0f, 0f))
 
     lateinit var peterSprites: SpriteSheet
     lateinit var blocksSprites: SpriteSheet
@@ -27,6 +27,7 @@ class LevelEditorScene : Scene() {
         saveOnExit = true
         levelEditorStuff.addComponent(MouseControls())
         levelEditorStuff.addComponent(GridLines())
+        levelEditorStuff.addComponent(EditorCamera(camera))
 
         loadResources()
     }
@@ -59,6 +60,8 @@ class LevelEditorScene : Scene() {
         // println("FPS: ${1.0f / dt}")
 
         levelEditorStuff.update(dt)
+        camera.adjustProjection()
+
         gameObjects.forEach { it.update(dt) }
         render()
     }
