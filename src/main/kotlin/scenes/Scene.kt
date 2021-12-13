@@ -64,7 +64,7 @@ abstract class Scene {
     fun saveExit() {
         try {
             val writer = FileWriter("level.txt")
-            writer.write(gson.toJson(gameObjects))
+            writer.write(gson.toJson(gameObjects.filter { it.doSerialization() }))
             writer.close()
         }catch (e: IOException){
             e.printStackTrace()

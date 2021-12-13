@@ -2,6 +2,7 @@ package components
 
 import imgui.internal.ImGui
 import marki.GameObject
+import org.joml.Vector2f
 import org.joml.Vector3f
 import org.joml.Vector4f
 import java.lang.reflect.Modifier
@@ -55,6 +56,13 @@ abstract class Component {
                         val typedValue = value as Boolean
                         if (ImGui.checkbox("$name : ", typedValue)) {
                             field.set(this, !typedValue)
+                        }
+                    }
+                    Vector2f::class.java -> {
+                        val typedValue = value as Vector2f
+                        val imVec = floatArrayOf(typedValue.x, typedValue.y)
+                        if (ImGui.dragFloat3("$name : ", imVec)) {
+                            typedValue.set(imVec[0], imVec[1])
                         }
                     }
                     Vector3f::class.java -> {

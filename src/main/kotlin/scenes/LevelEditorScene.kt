@@ -21,15 +21,18 @@ class LevelEditorScene : Scene() {
 
     lateinit var peterSprites: SpriteSheet
     lateinit var blocksSprites: SpriteSheet
+    lateinit var gizmosSprites: SpriteSheet
     private val levelEditorStuff = GameObject("LevelEditor")
 
     override fun init() {
         saveOnExit = true
+        loadResources()
+
         levelEditorStuff.addComponent(MouseControls())
         levelEditorStuff.addComponent(GridLines())
         levelEditorStuff.addComponent(EditorCamera(camera))
-
-        loadResources()
+        levelEditorStuff.addComponent(TranslateGizmo(gizmosSprites.getSprite(1), Window.imGuiLayer.propertiesWindow))
+        levelEditorStuff.start()
     }
 
     private fun loadResources() {
@@ -42,9 +45,14 @@ class LevelEditorScene : Scene() {
             Texture.BLOCKS_DECOS_SPRITE,
             SpriteSheet(AssetPool.getTexture(Texture.BLOCKS_DECOS_SPRITE), 32, 32, 14, 0)
         )
+        AssetPool.addSpriteSheet(
+            Texture.GIZMOS_SPRITE,
+            SpriteSheet(AssetPool.getTexture(Texture.GIZMOS_SPRITE), 24, 48, 2, 0)
+        )
 
         AssetPool.getSpriteSheet(Texture.PETER_SPRITE)?.let { peterSprites = it }
         AssetPool.getSpriteSheet(Texture.BLOCKS_DECOS_SPRITE)?.let { blocksSprites = it }
+        AssetPool.getSpriteSheet(Texture.GIZMOS_SPRITE)?.let { gizmosSprites = it }
 
         gameObjects.forEach { go ->
             val spriteRenderer = go.getComponent(SpriteRenderer::class.java)
@@ -71,6 +79,10 @@ class LevelEditorScene : Scene() {
     }
 
     override fun imgui() {
+        ImGui.begin("Level Editor Stuff")
+        levelEditorStuff.imgui()
+        ImGui.end()
+
         ImGui.begin("Blocks")
 
         val windowPos = ImVec2()

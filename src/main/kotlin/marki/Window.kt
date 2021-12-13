@@ -64,6 +64,8 @@ object Window {
         imGuiLayer.init(glfwWindow)
         imGuiGlfw.init(glfwWindow, true)
         imGuiGl3.init(glslVersion)
+
+        changeScene(0)
     }
 
 
@@ -108,8 +110,6 @@ object Window {
 
         frameBuffer = FrameBuffer(1920, 1080)
         glViewport(0, 0, 1920, 1080)
-
-        changeScene(0)
     }
 
     fun loop() {

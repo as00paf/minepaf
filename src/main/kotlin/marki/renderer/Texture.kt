@@ -92,6 +92,7 @@ class Texture {
     companion object {
         const val PETER_SPRITE = "assets/textures/peter_sprite2.png"
         const val BLOCKS_DECOS_SPRITE = "assets/textures/blocksAndDecorations.png"
+        const val GIZMOS_SPRITE = "assets/textures/gizmos.png"
         const val PETER = "assets/textures/peter.png"
     }
 }

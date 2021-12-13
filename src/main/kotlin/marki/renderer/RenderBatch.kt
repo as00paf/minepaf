@@ -2,6 +2,8 @@ package marki.renderer
 
 import components.SpriteRenderer
 import marki.Window
+import org.joml.Matrix4f
+import org.joml.Vector4f
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
@@ -145,6 +147,18 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comp
 
         val texCoords = sprite.getTextCoords()
 
+        val transform = sprite.gameObject.transform
+        val isRotated = transform.rotation != 0f
+        val transformMatrix = Matrix4f().identity()
+        if(isRotated) {
+            transformMatrix.translate(
+                transform.position.x,
+                transform.position.y,
+                0f)
+            transformMatrix.rotate(Math.toRadians(transform.rotation.toDouble()).toFloat(), 0f, 0f, 1f)
+            transformMatrix.scale(transform.scale.x, transform.scale.y, 1f)
+        }
+
         // Add vertices with the appropriate properties
         var xAdd = 1.0f
         var yAdd = 1.0f
@@ -156,9 +170,18 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comp
             }
 
             // Load position
-            val go = sprite.gameObject ?: return
-            vertices[offset] = go.transform.position.x + (xAdd * go.transform.scale.x)
-            vertices[offset + 1] = go.transform.position.y + (yAdd * go.transform.scale.y)
+            val go = sprite.gameObject
+            val currentPos = Vector4f(
+                go.transform.position.x + (xAdd * go.transform.scale.x),
+                go.transform.position.y + (yAdd * go.transform.scale.y),
+                0f, 1f)
+
+            if(isRotated) {
+                currentPos.set(Vector4f(xAdd, yAdd, 0f, 1f).mul(transformMatrix))
+            }
+
+            vertices[offset] = currentPos.x
+            vertices[offset + 1] = currentPos.y
 
             // Load color
             vertices[offset + 2] = color.x

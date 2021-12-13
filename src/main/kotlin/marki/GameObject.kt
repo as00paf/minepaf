@@ -16,6 +16,7 @@ class GameObject(
         }
     }
 
+    private var doSerialization = true
     private var uId = ID_COUNTER++
 
     private val components = mutableListOf<Component>()
@@ -55,4 +56,10 @@ class GameObject(
     fun getUid() = uId
 
     fun getAllComponents(): List<Component> = components
+    fun setNoSerialize() {
+        doSerialization = false
+    }
+    fun doSerialization():Boolean {
+        return doSerialization
+    }
 }

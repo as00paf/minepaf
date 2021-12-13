@@ -22,7 +22,7 @@ import marki.renderer.PickingTexture
 class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
     private val gameViewWindow = GameViewWindow()
-    private val propertiesWindow = PropertiesWindow(pickingTexture)
+    val propertiesWindow = PropertiesWindow(pickingTexture)
 
     fun init(glfwWindow: Long) {
         ImGui.createContext()
