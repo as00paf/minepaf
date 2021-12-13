@@ -4,11 +4,16 @@ import marki.Camera
 import marki.KeyListener
 import marki.MouseListener
 import org.joml.Vector2f
+import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.GLFW_KEY_HOME
 import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE
 import kotlin.math.pow
 import kotlin.math.abs
 import kotlin.math.sign
+import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE
+
+
+
 
 class EditorCamera(private val levelEditorCamera: Camera):Component() {
 
@@ -32,7 +37,7 @@ class EditorCamera(private val levelEditorCamera: Camera):Component() {
             return
         } else if (MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE)) {
             val mousePos = Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY())
-            val mouseDelta = mousePos.sub(clickOrigin)
+            val mouseDelta = Vector2f(mousePos).sub(clickOrigin)
             levelEditorCamera.position.sub(mouseDelta.mul(dt).mul(dragSensitivity))
             clickOrigin.lerp(mousePos, dt)
         } else if(dragDebounce <= 0f ) {

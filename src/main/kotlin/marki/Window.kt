@@ -87,13 +87,6 @@ object Window {
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL)
         if (glfwWindow == NULL) throw IllegalStateException("Unable to create the GLFW window.")
 
-        // Register input callbacks
-        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback)
-        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback)
-        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback)
-
-        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback)
-
         // Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow)
         // Enable v-sync

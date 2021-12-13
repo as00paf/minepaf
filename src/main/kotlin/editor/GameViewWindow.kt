@@ -31,11 +31,11 @@ class GameViewWindow {
         rightX = topLeft.x + windowSize.x
         topY = topLeft.y + windowSize.y
 
-        MouseListener.setGameViewportPos(Vector2f(topLeft.x, topLeft.y))
-        MouseListener.setGameViewportSize(Vector2f(windowSize.x, windowSize.y))
-
         val texId = Window.frameBuffer.getTextureId()
         ImGui.image(texId, windowSize.x, windowSize.y, 0f, 1f, 1f, 0f)
+
+        MouseListener.setGameViewportPos(Vector2f(topLeft.x, topLeft.y))
+        MouseListener.setGameViewportSize(Vector2f(windowSize.x, windowSize.y))
 
         ImGui.end()
     }

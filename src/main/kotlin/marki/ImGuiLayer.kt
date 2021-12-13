@@ -17,6 +17,7 @@ import imgui.flag.ImGuiStyleVar
 
 import imgui.flag.ImGuiCond
 import marki.renderer.PickingTexture
+import org.lwjgl.glfw.GLFW.*
 
 
 class ImGuiLayer(private val pickingTexture: PickingTexture) {
@@ -73,7 +74,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
         Window.mouseCursors[ImGuiMouseCursor.NotAllowed] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR)
 
         // GLFW callbacks to handle user input
-        /* glfwSetKeyCallback(glfwWindow) { w: Long, key: Int, scancode: Int, action: Int, mods: Int ->
+        glfwSetKeyCallback(glfwWindow) { w: Long, key: Int, scancode: Int, action: Int, mods: Int ->
              if (action == GLFW_PRESS) {
                  io.setKeysDown(key, true)
              } else if (action == GLFW_RELEASE) {
@@ -85,15 +86,11 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
              io.keySuper = io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER)
 
              if(!io.wantCaptureKeyboard) {
-                 //KeyListener.keyCallback(w, key, scancode, action, mods)
+                 KeyListener.keyCallback(w, key, scancode, action, mods)
              }
          }
 
-        glfwSetCharCallback(glfwWindow) { w: Long, c: Int ->
-            if (c != GLFW_KEY_DELETE) {
-                io.addInputCharacter(c)
-            }
-        }*/
+        GLFW.glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback)
 
         GLFW.glfwSetMouseButtonCallback(glfwWindow) { w: Long, button: Int, action: Int, mods: Int ->
             val mouseDown = BooleanArray(5)
@@ -116,7 +113,9 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
             io.mouseWheelH = io.mouseWheelH + xOffset.toFloat()
             io.mouseWheel = io.mouseWheel + yOffset.toFloat()
 
-            MouseListener.mouseScrollCallback(w, xOffset, yOffset)
+            if (gameViewWindow.getWantCaptureMouse()) {
+                MouseListener.mouseScrollCallback(w, xOffset, yOffset)
+            }
         }
 
         io.setSetClipboardTextFn(object : ImStrConsumer() {
