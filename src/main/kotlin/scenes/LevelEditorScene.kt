@@ -4,16 +4,10 @@ import components.*
 import imgui.ImGui
 import imgui.ImVec2
 import marki.*
-import marki.renderer.DebugDraw
-import marki.renderer.Line2D
 import marki.renderer.Shader
 import marki.renderer.Texture
 import org.joml.Vector2f
-import org.joml.Vector3f
-import org.joml.Vector4f
 import util.AssetPool
-import kotlin.math.cos
-import kotlin.math.sin
 
 class LevelEditorScene : Scene() {
 
@@ -31,7 +25,7 @@ class LevelEditorScene : Scene() {
         levelEditorStuff.addComponent(MouseControls())
         levelEditorStuff.addComponent(GridLines())
         levelEditorStuff.addComponent(EditorCamera(camera))
-        levelEditorStuff.addComponent(TranslateGizmo(gizmosSprites.getSprite(1), Window.imGuiLayer.propertiesWindow))
+        levelEditorStuff.addComponent(GizmoSystem(gizmosSprites))
         levelEditorStuff.start()
     }
 
@@ -47,7 +41,7 @@ class LevelEditorScene : Scene() {
         )
         AssetPool.addSpriteSheet(
             Texture.GIZMOS_SPRITE,
-            SpriteSheet(AssetPool.getTexture(Texture.GIZMOS_SPRITE), 24, 48, 2, 0)
+            SpriteSheet(AssetPool.getTexture(Texture.GIZMOS_SPRITE), 24, 48, 3, 0)
         )
 
         AssetPool.getSpriteSheet(Texture.PETER_SPRITE)?.let { peterSprites = it }

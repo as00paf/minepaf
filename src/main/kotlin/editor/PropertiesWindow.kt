@@ -1,5 +1,6 @@
 package editor
 
+import components.NonPickable
 import imgui.ImGui
 import marki.GameObject
 import marki.MouseListener
@@ -21,7 +22,12 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
             val y = MouseListener.getScreenY().toInt()
 
             val goId = pickingTexture.readPixel(x, y)
-            activeGameObject = currentScene.getGameObject(goId + 1)
+            val pickedObject = currentScene.getGameObject(goId + 1)
+            if(pickedObject != null && pickedObject.getComponent(NonPickable::class.java) == null)
+                activeGameObject = pickedObject
+            else if(pickedObject == null && MouseListener.isDragging().not()) {
+                activeGameObject = null
+            }
             debounce = DEFAULT_DEBOUNCE
             //println("Pixel: ${pickingTexture.readPixel(x, y)}")
         }

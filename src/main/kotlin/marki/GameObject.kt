@@ -34,7 +34,7 @@ class GameObject(
     fun addComponent(component: Component){
         component.generateId()
         components.add(component)
-        component.gameObject = this
+        component.init(this)
     }
 
     fun update(dt: Float) {
