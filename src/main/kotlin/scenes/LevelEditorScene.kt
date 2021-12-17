@@ -16,7 +16,7 @@ class LevelEditorScene : Scene() {
     lateinit var peterSprites: SpriteSheet
     lateinit var blocksSprites: SpriteSheet
     lateinit var gizmosSprites: SpriteSheet
-    private val levelEditorStuff = GameObject("LevelEditor")
+    private val levelEditorStuff = createGameObject("LevelEditor")
 
     override fun init() {
         saveOnExit = true

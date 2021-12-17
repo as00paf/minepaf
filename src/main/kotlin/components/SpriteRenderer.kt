@@ -1,5 +1,6 @@
 package components
 
+import editor.MImGui
 import imgui.internal.ImGui
 import marki.Transform
 import marki.renderer.Texture
@@ -28,10 +29,7 @@ class SpriteRenderer(
     }
 
     override fun imgui() {
-        super.imgui()
-        val imColor = floatArrayOf(color.x, color.y, color.z, color.w)
-        if(ImGui.colorPicker4("Color Picker: ${gameObject.name}", imColor)){
-            color.set(imColor[0], imColor[1], imColor[2], imColor[3])
+        if(MImGui.colorPicker4("Color Picker", this.color)){
             isDirty = true
         }
     }

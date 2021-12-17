@@ -42,6 +42,8 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     override fun start() {
         xAxisObject.transform.rotation = 90f
         yAxisObject.transform.rotation = 180f
+        xAxisObject.transform.zIndex = 100
+        yAxisObject.transform.zIndex = 100
         xAxisObject.setNoSerialize()
         yAxisObject.setNoSerialize()
     }

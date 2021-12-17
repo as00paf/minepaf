@@ -8,10 +8,10 @@ import org.lwjgl.glfw.GLFW.GLFW_KEY_R
 
 class GizmoSystem(private val gizmosSprites: SpriteSheet):Component() {
 
-    private var usingGizmo = -1
+    private var usingGizmo = TRANSLATE_GIZMO
 
-    override fun init(go:GameObject) {
-        super.init(go)
+    override fun init(gameObject:GameObject) {
+        super.init(gameObject)
         this.gameObject.addComponent(TranslateGizmo(gizmosSprites.getSprite(1), Window.imGuiLayer.propertiesWindow))
         this.gameObject.addComponent(ScaleGizmo(gizmosSprites.getSprite(2), Window.imGuiLayer.propertiesWindow))
     }

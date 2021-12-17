@@ -7,6 +7,7 @@ import imgui.ImGui
 import marki.Camera
 import marki.GameObject
 import marki.GameObjectSerializer
+import marki.Transform
 import marki.renderer.Renderer
 import java.io.FileWriter
 import java.io.IOException
@@ -59,6 +60,13 @@ abstract class Scene {
 
     open fun imgui() {
 
+    }
+
+    fun createGameObject(name: String):GameObject {
+        val go = GameObject(name)
+        go.addComponent(Transform())
+        go.transform = go.getComponent(Transform::class.java)!!
+        return go
     }
 
     fun saveExit() {

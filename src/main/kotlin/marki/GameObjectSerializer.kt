@@ -12,14 +12,14 @@ class GameObjectSerializer: JsonDeserializer<GameObject> {
         val obj = json.asJsonObject
         val name = obj.get("name").asString
         val components = obj.getAsJsonArray("components")
-        val transform = context.deserialize<Transform>(obj.get("transform"), Transform::class.java)
-        val zIndex = context.deserialize<Int>(obj.get("zIndex"), Int::class.java)
 
-        val go = GameObject(name,transform, zIndex)
+        val go = GameObject(name)
         components.forEach { element ->
             val component = context.deserialize<Component>(element, Component::class.java)
             go.addComponent(component)
         }
+
+        go.transform = go.getComponent(Transform::class.java)!!
 
         return go
     }

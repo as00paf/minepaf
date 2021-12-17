@@ -1,12 +1,11 @@
 package marki
 
 import components.Component
+import imgui.internal.ImGui
 import util.extensions.findByClass
 
 class GameObject(
     val name: String,
-    var transform: Transform = Transform(),
-    private var zIndex:Int = 0
 ) {
     companion object {
         private var ID_COUNTER: Int = 0
@@ -21,7 +20,9 @@ class GameObject(
 
     private val components = mutableListOf<Component>()
 
-    fun <T: Component> getComponent(componentClass: Class<T>): T? {
+    @Transient var transform: Transform = Transform()
+
+    fun <T> getComponent(componentClass: Class<T>): T? {
         return components.firstOrNull { componentClass.isAssignableFrom(it.javaClass)} as? T?
     }
 
@@ -45,11 +46,10 @@ class GameObject(
         components.forEach { it.start() }
     }
 
-    fun zIndex() = zIndex
-
     fun imgui() {
         components.forEach {
-            it.imgui()
+            if(ImGui.collapsingHeader(it.javaClass.simpleName))
+                it.imgui()
         }
     }
 

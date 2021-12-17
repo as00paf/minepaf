@@ -137,7 +137,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
         fontConfig.glyphRanges = fontAtlas.glyphRangesDefault
         fontConfig.pixelSnapH = true
-        fontAtlas.addFontFromFileTTF("assets/fonts/Roboto-Medium.ttf", 32f, fontConfig)
+        fontAtlas.addFontFromFileTTF("assets/fonts/Roboto-Medium.ttf", 24f, fontConfig)
 
         fontConfig.destroy()
     }

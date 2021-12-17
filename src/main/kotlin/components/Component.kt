@@ -1,5 +1,6 @@
 package components
 
+import editor.MImGui
 import imgui.internal.ImGui
 import marki.GameObject
 import org.joml.Vector2f
@@ -43,17 +44,11 @@ abstract class Component {
                 when (type) {
                     Int::class.java -> {
                         val typedValue = value as Int
-                        val imInt = intArrayOf(typedValue)
-                        if (ImGui.dragInt("$name: ", imInt)) {
-                            field.set(this, imInt[0])
-                        }
+                        field.set(this, MImGui.dragInt(name, typedValue))
                     }
                     Float::class.java -> {
                         val typedValue = value as Float
-                        val imFloat = floatArrayOf(typedValue)
-                        if (ImGui.dragFloat("$name: ", imFloat)) {
-                            field.set(this, imFloat[0])
-                        }
+                        field.set(this, MImGui.dragFloat(name, typedValue))
                     }
                     Boolean::class.java -> {
                         val typedValue = value as Boolean
@@ -63,10 +58,7 @@ abstract class Component {
                     }
                     Vector2f::class.java -> {
                         val typedValue = value as Vector2f
-                        val imVec = floatArrayOf(typedValue.x, typedValue.y)
-                        if (ImGui.dragFloat3("$name : ", imVec)) {
-                            typedValue.set(imVec[0], imVec[1])
-                        }
+                        MImGui.drawVec2Control(name, typedValue)
                     }
                     Vector3f::class.java -> {
                         val typedValue = value as Vector3f
