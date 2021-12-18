@@ -5,6 +5,9 @@ import imgui.ImVec2
 import imgui.flag.ImGuiWindowFlags
 import marki.MouseListener
 import marki.Window
+import observers.EventSystem
+import observers.events.Event
+import observers.events.EventType
 import org.joml.Vector2f
 
 class GameViewWindow {
@@ -13,9 +16,24 @@ class GameViewWindow {
     private var rightX = 0f
     private var topY = 0f
     private var bottomY = 0f
+    private var isPlaying = false
 
     fun imgui() {
-        ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar or ImGuiWindowFlags.NoScrollWithMouse)
+        ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar or ImGuiWindowFlags.NoScrollWithMouse or ImGuiWindowFlags.MenuBar)
+
+        ImGui.beginMenuBar()
+
+        if(ImGui.menuItem("Play", "", isPlaying, !isPlaying)){
+            isPlaying = true
+            EventSystem.notify(EventType.GameEngineStartPlay)
+        }
+
+        if(ImGui.menuItem("Stop", "", !isPlaying, isPlaying)){
+            isPlaying = false
+            EventSystem.notify(EventType.GameEngineStopPlay)
+        }
+
+        ImGui.endMenuBar()
 
         val windowSize = getLargestSizeForViewport()
         val windowPos = getCenteredPositionForViewport(windowSize)

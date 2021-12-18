@@ -1,5 +1,3 @@
 package observers.events
 
-class Event(type: EventType) {
-
-}
+class Event(val type: EventType = EventType.UserEvent)

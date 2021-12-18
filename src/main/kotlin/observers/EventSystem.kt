@@ -2,6 +2,7 @@ package observers
 
 import marki.GameObject
 import observers.events.Event
+import observers.events.EventType
 
 object EventSystem {
 
@@ -17,8 +18,12 @@ object EventSystem {
         }
     }
 
-    fun notify(go: GameObject, event: Event) {
-        observers.forEach { it.onNotify(go, event) }
+    fun notify(event: Event, go: GameObject? = null) {
+        observers.forEach { it.onNotify(event, go) }
+    }
+
+    fun notify(eventType: EventType, go: GameObject? = null) {
+        observers.forEach { it.onNotify(Event(eventType), go) }
     }
 
 }

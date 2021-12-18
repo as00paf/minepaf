@@ -6,6 +6,10 @@ import imgui.flag.ImGuiMouseCursor
 import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
 import marki.renderer.*
+import observers.EventSystem
+import observers.Observer
+import observers.events.Event
+import observers.events.EventType
 import org.lwjgl.Version
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
@@ -19,7 +23,7 @@ import util.AssetPool
 import util.Time
 
 
-object Window {
+object Window:Observer {
     private val width: Int = 1920
     private val height: Int = 1080
     private val title = "MinePaf"
@@ -41,10 +45,10 @@ object Window {
     lateinit var imGuiLayer:ImGuiLayer
     val mouseCursors = arrayOfNulls<Long>(ImGuiMouseCursor.COUNT)
 
+    // TODO: remove
     fun get(): Window = this
 
     fun run() {
-        println("Hello LWJGL ${Version.getVersion()} !")
         init()
         loop()
 
@@ -64,6 +68,8 @@ object Window {
         imGuiLayer.init(glfwWindow)
         imGuiGlfw.init(glfwWindow, true)
         imGuiGl3.init(glslVersion)
+
+        EventSystem.addObserver(this)
 
         changeScene(0)
     }
@@ -187,6 +193,14 @@ object Window {
         currentScene.init()
         currentScene.start()
 
+    }
+
+    override fun onNotify(event: Event, go: GameObject?) {
+        if(event.type == EventType.GameEngineStartPlay){
+            println("Starting play!")
+        }else if(event.type == EventType.GameEngineStopPlay) {
+            println("Ending play!")
+        }
     }
 
     fun getScene(): Scene = currentScene
