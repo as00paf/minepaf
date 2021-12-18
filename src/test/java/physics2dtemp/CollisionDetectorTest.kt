@@ -1,10 +1,10 @@
-package physics2d
+package physics2dtemp
 
 import junit.framework.TestCase.assertTrue
 import marki.renderer.Line2D
 import org.joml.Vector2f
 import org.junit.Test
-import physics2d.rigidbody.IntersectionDetector2D
+import physics2dtemp.rigidbody.IntersectionDetector2D
 
 class CollisionDetectorTest {
 

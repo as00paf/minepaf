@@ -6,6 +6,9 @@ import marki.GameObject
 import marki.MouseListener
 import marki.renderer.PickingTexture
 import org.lwjgl.glfw.GLFW
+import physics2d.components.Box2DCollider
+import physics2d.components.CircleCollider
+import physics2d.components.RigidBody2D
 import scenes.Scene
 
 const val DEFAULT_DEBOUNCE = 0.2f
@@ -37,6 +40,29 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
         val go = activeGameObject
         if(go != null) {
             ImGui.begin("Properties")
+
+            if(ImGui.beginPopupContextWindow("ComponentAdder")) {
+                if(ImGui.menuItem("Add Rigidbody")) {
+                    if(go.getComponent(RigidBody2D::class.java) == null) {
+                        go.addComponent(RigidBody2D())
+                    }
+                }
+
+                if(ImGui.menuItem("Add Box Collider")) {
+                    if(go.getComponent(Box2DCollider::class.java) == null && go.getComponent(CircleCollider::class.java) == null) {
+                        go.addComponent(Box2DCollider())
+                    }
+                }
+
+                if(ImGui.menuItem("Add Circle Collider")) {
+                    if(go.getComponent(CircleCollider::class.java) == null && go.getComponent(Box2DCollider::class.java) == null) {
+                        go.addComponent(CircleCollider())
+                    }
+                }
+
+                ImGui.endPopup()
+            }
+
             activeGameObject?.imgui()
             ImGui.end()
         }

@@ -7,8 +7,8 @@
         "type": "marki.Transform",
         "properties": {
           "position": {
-            "x": 420.93628,
-            "y": 434.33722
+            "x": 97.3,
+            "y": 97.5
           },
           "scale": {
             "x": 32.0,
@@ -118,6 +118,22 @@
             "w": 1.0
           },
           "uId": 40
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Dynamic",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 59
         }
       }
     ],

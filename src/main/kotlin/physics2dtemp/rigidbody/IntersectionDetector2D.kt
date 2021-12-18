@@ -1,8 +1,8 @@
-package physics2d.rigidbody
+package physics2dtemp.rigidbody
 
 import marki.renderer.Line2D
 import org.joml.Vector2f
-import physics2d.primitives.*
+import physics2dtemp.primitives.*
 import util.JMath
 import java.lang.Float.max
 import java.lang.Float.min

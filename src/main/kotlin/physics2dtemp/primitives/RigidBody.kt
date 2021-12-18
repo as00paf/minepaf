@@ -1,9 +1,8 @@
-package physics2d.primitives
+package physics2dtemp.primitives
 
 import components.Component
 import org.joml.Vector2f
 import org.joml.Vector3f
-import org.joml.Vector4f
 
 class RigidBody(val position:Vector2f = Vector2f(), val rotation:Float = 0f): Component() {
 
