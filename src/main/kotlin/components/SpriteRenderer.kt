@@ -28,6 +28,13 @@ class SpriteRenderer(
         }
     }
 
+    override fun editorUpdate(dt: Float) {
+        if(lastTransform != gameObject.transform) {
+            gameObject.transform.copy(lastTransform)
+            isDirty = true
+        }
+    }
+
     override fun imgui() {
         if(MImGui.colorPicker4("Color Picker", this.color)){
             isDirty = true
@@ -37,6 +44,8 @@ class SpriteRenderer(
     fun getColor() = color
     fun getTextCoords(): Array<Vector2f> = sprite.getTexCoords()
     fun isDirty() = isDirty
+    fun setClean() { isDirty = false }
+    fun setDirty() { isDirty = true }
     fun getTexture() = sprite.getTexture()
     fun setTexture(tex: Texture) {
         sprite.setTexture(tex)
@@ -53,6 +62,4 @@ class SpriteRenderer(
             isDirty = true
         }
     }
-
-    fun setClean() { isDirty = false }
 }

@@ -39,6 +39,18 @@ class Renderer {
         batches.forEach { it.render() }
     }
 
+    fun destroyGameObject(deadObject: GameObject) {
+        if(deadObject.getComponent(SpriteRenderer::class.java) == null) return
+
+        batches.forEach { batch ->
+            if(batch.destroyIfExists(deadObject)) return
+        }
+    }
+
+    fun destroyGameObjects(deadObjects: List<GameObject>) {
+
+    }
+
     companion object {
         lateinit var currentShader: Shader
 

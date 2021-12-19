@@ -16,7 +16,7 @@ class GizmoSystem(private val gizmosSprites: SpriteSheet):Component() {
         this.gameObject.addComponent(ScaleGizmo(gizmosSprites.getSprite(2), Window.imGuiLayer.propertiesWindow))
     }
 
-    override fun update(dt: Float) {
+    override fun editorUpdate(dt: Float) {
         val translateGizmo = gameObject.getComponent(TranslateGizmo::class.java)!!
         val scaleGizmo = gameObject.getComponent(ScaleGizmo::class.java)!!
 

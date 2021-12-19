@@ -45,8 +45,10 @@ object MouseListener {
             this.mouseButtonPressed[button] = true
         } else if (action == GLFW_RELEASE) {
             mouseButtonsDown--
-            this.mouseButtonPressed[button] = false
-            this.isDragging = false
+            if (button < mouseButtonPressed.size) {
+                this.mouseButtonPressed[button] = false
+                this.isDragging = false
+            }
         }
     }
 
@@ -81,7 +83,7 @@ object MouseListener {
         currentX = currentX / gameViewportSize.x * 2.0f - 1.0f
         val tmp = Vector4f(currentX, 0f, 0f, 1f)
 
-        val camera = getScene().camera()
+        val camera = getScene().camera
         val viewProjection = Matrix4f()
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
         tmp.mul(viewProjection)
@@ -98,7 +100,7 @@ object MouseListener {
         currentY = -(currentY / gameViewportSize.y * 2.0f - 1.0f)
         val tmp = Vector4f(0f, currentY, 0f, 1f)
 
-        val camera = getScene().camera()
+        val camera = getScene().camera
         val viewProjection = Matrix4f()
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
         tmp.mul(viewProjection)

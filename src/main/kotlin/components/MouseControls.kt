@@ -18,7 +18,7 @@ class MouseControls: Component() {
         holdingObject = null
     }
 
-    override fun update(dt: Float) {
+    override fun editorUpdate(dt: Float) {
         holdingObject?.let {
             it.transform.position.x = (MouseListener.getOrthoX() / Settings.GRID_WIDTH).toInt() * Settings.GRID_WIDTH.toFloat()
             it.transform.position.y = (MouseListener.getOrthoY() / Settings.GRID_HEIGHT).toInt() * Settings.GRID_HEIGHT.toFloat()

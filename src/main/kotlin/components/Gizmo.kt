@@ -49,8 +49,12 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     }
 
     override fun update(dt: Float) {
+        if(inUse) setInactive()
+    }
+
+    override fun editorUpdate(dt: Float) {
         if(!inUse) return
-        activeGameObject = propertiesWindow.getActiveGameObject()
+        activeGameObject = propertiesWindow.activeGameObject
         val go = activeGameObject
         if(go != null) setActive() else {
             setInactive()
@@ -60,13 +64,13 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
         val xAxisHot = checkXHoverState()
         val yAxisHot = checkYHoverState()
 
-        if((xAxisHot or xAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        if((xAxisHot || xAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             xAxisActive = true
             yAxisActive = false
-        } else if((yAxisHot or yAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        } else if((yAxisHot || yAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             yAxisActive = true
             xAxisActive = false
-        } else {
+        } else if(!MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !MouseListener.isDragging()) {
             xAxisActive = false
             yAxisActive = false
         }

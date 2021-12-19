@@ -3,33 +3,31 @@ package scenes
 import components.*
 import imgui.ImGui
 import imgui.ImVec2
-import marki.*
+import marki.GameObject
+import marki.Prefabs
 import marki.renderer.Shader
 import marki.renderer.Texture
-import org.joml.Vector2f
 import util.AssetPool
 
-class LevelEditorScene : Scene() {
-
-    override var camera: Camera = Camera(Vector2f(-0f, 0f))
+class LevelEditorSceneInitializer : SceneInitializer() {
 
     lateinit var peterSprites: SpriteSheet
     lateinit var blocksSprites: SpriteSheet
     lateinit var gizmosSprites: SpriteSheet
-    private val levelEditorStuff = createGameObject("LevelEditor")
 
-    override fun init() {
-        saveOnExit = true
-        loadResources()
+    lateinit var levelEditorStuff: GameObject
 
-        levelEditorStuff.addComponent(MouseControls())
-        levelEditorStuff.addComponent(GridLines())
-        levelEditorStuff.addComponent(EditorCamera(camera))
-        levelEditorStuff.addComponent(GizmoSystem(gizmosSprites))
-        levelEditorStuff.start()
+    override fun init(scene: Scene) {
+        levelEditorStuff = scene.createGameObject("LevelEditor")
+            .setNoSerialize()
+            .addComponent(MouseControls())
+            .addComponent(GridLines())
+            .addComponent(EditorCamera(scene.camera))
+            .addComponent(GizmoSystem(gizmosSprites))
+        scene.addGameObjectToScene(levelEditorStuff)
     }
 
-    private fun loadResources() {
+    override fun loadResources(scene: Scene) {
         AssetPool.getShader(Shader.DEFAULT)
         AssetPool.addSpriteSheet(
             Texture.PETER_SPRITE,
@@ -48,28 +46,14 @@ class LevelEditorScene : Scene() {
         AssetPool.getSpriteSheet(Texture.BLOCKS_DECOS_SPRITE)?.let { blocksSprites = it }
         AssetPool.getSpriteSheet(Texture.GIZMOS_SPRITE)?.let { gizmosSprites = it }
 
-        gameObjects.forEach { go ->
+        scene.gameObjects.forEach { go ->
             val spriteRenderer = go.getComponent(SpriteRenderer::class.java)
             val texture = spriteRenderer?.getTexture()
-            if(texture != null) {
+            if (texture != null) {
                 val path = texture.getFilePath()!!
                 spriteRenderer.setTexture(AssetPool.getTexture(path))
             }
         }
-    }
-
-    override fun update(dt: Float) {
-        // println("FPS: ${1.0f / dt}")
-
-        levelEditorStuff.update(dt)
-        camera.adjustProjection()
-
-        gameObjects.forEach { it.update(dt) }
-        render()
-    }
-
-    override fun render() {
-        renderer.render()
     }
 
     override fun imgui() {
@@ -125,6 +109,4 @@ class LevelEditorScene : Scene() {
         ImGui.end()
 
     }
-
-    override fun camera(): Camera = camera
 }

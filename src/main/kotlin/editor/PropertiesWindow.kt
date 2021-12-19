@@ -14,7 +14,8 @@ import scenes.Scene
 const val DEFAULT_DEBOUNCE = 0.2f
 
 class PropertiesWindow(private val pickingTexture: PickingTexture) {
-    private var activeGameObject: GameObject? = null
+    var activeGameObject: GameObject? = null
+
     private var debounce = DEFAULT_DEBOUNCE
 
     fun update(dt: Float, currentScene: Scene) {
@@ -29,6 +30,7 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
             if(pickedObject != null && pickedObject.getComponent(NonPickable::class.java) == null)
                 activeGameObject = pickedObject
             else if(pickedObject == null && MouseListener.isDragging().not()) {
+                println("Stop dragging")
                 activeGameObject = null
             }
             debounce = DEFAULT_DEBOUNCE
@@ -39,7 +41,7 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
     fun imgui(){
         val go = activeGameObject
         if(go != null) {
-            ImGui.begin("Properties")
+            ImGui.begin("Properties: ${go.name}")
 
             if(ImGui.beginPopupContextWindow("ComponentAdder")) {
                 if(ImGui.menuItem("Add Rigidbody")) {
@@ -66,9 +68,5 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
             activeGameObject?.imgui()
             ImGui.end()
         }
-    }
-
-    fun getActiveGameObject(): GameObject? {
-       return activeGameObject
     }
 }

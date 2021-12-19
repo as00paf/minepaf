@@ -28,6 +28,7 @@ abstract class Component {
     }
     open fun start() {}
     open fun update(dt: Float) {}
+    open fun editorUpdate(dt: Float) {}
     open fun imgui() {
         try {
             val fields = this.javaClass.declaredFields
@@ -87,4 +88,7 @@ abstract class Component {
     }
 
     fun getUid() = uId
+
+    open fun destroy() {
+    }
 }

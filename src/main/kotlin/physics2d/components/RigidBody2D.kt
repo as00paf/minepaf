@@ -13,7 +13,7 @@ class RigidBody2D(): Component() {
     var bodyType: BodyType = BodyType.Dynamic
     var fixedRotation = false
     var continuousCollision = true
-    var rawBody: Body? = null
+    @Transient var rawBody: Body? = null
 
     override fun update(dt: Float) {
         val rb = rawBody

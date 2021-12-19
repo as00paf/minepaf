@@ -68,4 +68,16 @@ class Physics2d {
             world.step(physicsTimeStep, velocityIterations, positionIterations)
         }
     }
+
+    fun destroyGameObject(go: GameObject) {
+        val body = go.getComponent(RigidBody2D::class.java)
+        body?.rawBody?.let { rawBody ->
+            world.destroyBody(rawBody)
+            body.rawBody = null
+        }
+    }
+
+    fun destroyGameObjects(deadObjects: List<GameObject>) {
+        deadObjects.forEach { destroyGameObject(it) }
+    }
 }

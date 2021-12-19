@@ -11,13 +11,13 @@ import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT
 
 class TranslateGizmo(arrowSprite: Sprite, propertiesWindow: PropertiesWindow):Gizmo(arrowSprite, propertiesWindow) {
 
-    override fun update(dt: Float) {
+    override fun editorUpdate(dt: Float) {
         val go = activeGameObject
         if(go != null) {
             if(xAxisActive && !yAxisActive) go.transform.position.x -= MouseListener.getWorldDx()
             if(yAxisActive) go.transform.position.y -= MouseListener.getWorldDy()
         }
 
-        super.update(dt)
+        super.editorUpdate(dt)
     }
 }

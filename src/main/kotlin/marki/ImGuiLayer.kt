@@ -1,6 +1,7 @@
 package marki
 
 import editor.GameViewWindow
+import editor.MenuBar
 import editor.PropertiesWindow
 import imgui.ImFontConfig
 import imgui.ImGui
@@ -24,6 +25,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
     private val gameViewWindow = GameViewWindow()
     val propertiesWindow = PropertiesWindow(pickingTexture)
+    lateinit var menuBar: MenuBar
 
     fun init(glfwWindow: Long) {
         ImGui.createContext()
@@ -140,29 +142,30 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
         fontAtlas.addFontFromFileTTF("assets/fonts/Roboto-Medium.ttf", 24f, fontConfig)
 
         fontConfig.destroy()
+
+        // Menu
+        menuBar = MenuBar()
     }
 
     fun imGui(dt: Float, currentScene: Scene) {
         setupDockSpace()
-        ImGui.showDemoWindow()
         currentScene.imgui()
         gameViewWindow.imgui()
         propertiesWindow.update(dt, currentScene)
         propertiesWindow.imgui()
+        menuBar.imgui()
         ImGui.end()
         ImGui.render()
     }
 
     private fun setupDockSpace() {
-        var windowFlags = ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking
-
         ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.Always)
         ImGui.setNextWindowSize(Window.getWidth().toFloat(), Window.getHeight().toFloat())
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f)
-        windowFlags = windowFlags or (ImGuiWindowFlags.NoTitleBar or ImGuiWindowFlags.NoCollapse or
+        val windowFlags = ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoTitleBar or ImGuiWindowFlags.NoCollapse or
                 ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or
-                ImGuiWindowFlags.NoBringToFrontOnFocus or ImGuiWindowFlags.NoNavFocus)
+                ImGuiWindowFlags.NoBringToFrontOnFocus or ImGuiWindowFlags.NoNavFocus
 
         ImGui.begin("Dockspace Demo", ImBoolean(true), windowFlags)
         ImGui.popStyleVar(2)

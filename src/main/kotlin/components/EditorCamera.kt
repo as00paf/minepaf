@@ -24,7 +24,7 @@ class EditorCamera(private val levelEditorCamera: Camera):Component() {
     private var lerpTime = 0.0f
     private var reset = false
 
-    override fun update(dt: Float) {
+    override fun editorUpdate(dt: Float) {
         drag(dt)
         zoom()
         resetIfNeeded(dt)

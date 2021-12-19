@@ -9,32 +9,36 @@ import marki.GameObject
 import marki.GameObjectSerializer
 import marki.Transform
 import marki.renderer.Renderer
+import org.joml.Vector2f
+import physics2d.Physics2d
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-abstract class Scene {
+class Scene(private val initializer:SceneInitializer, val camera: Camera = Camera()) {
 
-    protected abstract var camera: Camera
-    protected val gameObjects = mutableListOf<GameObject>()
-    protected var isRunning = false
+    val gameObjects = mutableListOf<GameObject>()
     val renderer = Renderer()
+    val physics2d = Physics2d()
 
-    var saveOnExit: Boolean = false
-    protected var levelLoaded = false
-    protected val gson = GsonBuilder()
+    private var isRunning = false
+    private val gson = GsonBuilder()
         .setPrettyPrinting()
         .registerTypeAdapter(Component::class.java, ComponentDeserializer())
         .registerTypeAdapter(GameObject::class.java, GameObjectSerializer())
         .create()
 
-    abstract fun init()
+    fun init(){
+        initializer.loadResources(this)
+        initializer.init(this)
+    }
 
     fun start(){
         gameObjects.forEach { go ->
             go.start()
             renderer.add(go)
+            physics2d.add(go)
         }
         isRunning = true
     }
@@ -46,6 +50,7 @@ abstract class Scene {
             gameObjects.add(gameObject)
             gameObject.start()
             renderer.add(gameObject)
+            physics2d.add(gameObject)
         }
     }
 
@@ -53,13 +58,28 @@ abstract class Scene {
         return gameObjects.firstOrNull { it.getUid() == id }
     }
 
-    abstract fun update(dt: Float)
-    abstract fun render()
+    fun editorUpdate(dt: Float){
+        camera.adjustProjection()
+        gameObjects.forEach { it.editorUpdate(dt) }
+    }
 
-    abstract fun camera(): Camera
+    fun update(dt: Float){
+        camera.adjustProjection()
+        physics2d.update(dt)
 
-    open fun imgui() {
+        gameObjects.forEach { it.update(dt) }
+        val deadObjects = gameObjects.filter { it.isDead() }
+        gameObjects.removeIf { it.isDead() }
+        renderer.destroyGameObjects(deadObjects)
+        physics2d.destroyGameObjects(deadObjects)
+    }
 
+    fun render(){
+        this.renderer.render()
+    }
+
+    fun imgui() {
+        initializer.imgui()
     }
 
     fun createGameObject(name: String):GameObject {
@@ -69,7 +89,7 @@ abstract class Scene {
         return go
     }
 
-    fun saveExit() {
+    fun save() {
         try {
             val writer = FileWriter("level.txt")
             writer.write(gson.toJson(gameObjects.filter { it.doSerialization() }))
@@ -112,8 +132,10 @@ abstract class Scene {
             //println(maxCompId)
             GameObject.init(maxGoId)
             Component.init(maxCompId)
-
-            levelLoaded = true
         }
+    }
+
+    fun destroy() {
+        gameObjects.forEach { it.destroy() }
     }
 }

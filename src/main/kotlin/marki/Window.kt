@@ -10,15 +10,15 @@ import observers.EventSystem
 import observers.Observer
 import observers.events.Event
 import observers.events.EventType
-import org.lwjgl.Version
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
-import scenes.LevelEditorScene
+import scenes.LevelEditorSceneInitializer
 import scenes.Scene
+import scenes.SceneInitializer
 import util.AssetPool
 import util.Time
 
@@ -29,7 +29,7 @@ object Window:Observer {
     private val title = "MinePaf"
 
     private var glfwWindow: Long = -1L
-    private var currentScene: Scene = LevelEditorScene()
+    lateinit var currentScene: Scene
     lateinit var frameBuffer: FrameBuffer
     lateinit var pickingTexture: PickingTexture
 
@@ -37,6 +37,7 @@ object Window:Observer {
     private var g = 1.0f
     private var b = 1.0f
     private var a = 1.0f
+    private var runtimePlaying = false
 
     // Im GUI
     val imGuiGlfw = ImGuiImplGlfw()
@@ -71,7 +72,7 @@ object Window:Observer {
 
         EventSystem.addObserver(this)
 
-        changeScene(0)
+        changeScene(LevelEditorSceneInitializer(), true)
     }
 
 
@@ -145,7 +146,9 @@ object Window:Observer {
             if (dt > 0) {
                 DebugDraw.draw()
                 Renderer.bindShader(defaultShader)
-                currentScene.update(dt)
+                if(runtimePlaying) currentScene.update(dt)
+                else currentScene.editorUpdate(dt)
+
                 currentScene.render()
             }
             frameBuffer.unbind()
@@ -159,8 +162,6 @@ object Window:Observer {
             dt = endTime - beginTime
             beginTime = endTime
         }
-
-        if (currentScene.saveOnExit) currentScene.saveExit()
     }
 
     private fun renderImGui(dt: Float, currentScene: Scene) {
@@ -180,26 +181,32 @@ object Window:Observer {
         ImGui.endFrame()
     }
 
-    fun changeScene(newScene: Int) {
-        /*currentScene = when(newScene) {
-            0 -> LevelEditorScene()
-            1 -> LevelScene()
-            else -> {
-                assert(false) { "Unknow scene $newScene" }
-            }
-        }*/
+    fun changeScene(initializer: SceneInitializer, isFirstScene: Boolean = false) {
+        if(!isFirstScene) currentScene.destroy()
 
-        currentScene.load()
-        currentScene.init()
-        currentScene.start()
+        imGuiLayer.propertiesWindow.activeGameObject = null
 
+        val scene = Scene(initializer)
+        currentScene = scene
+        scene.load()
+        scene.init()
+        scene.start()
     }
 
     override fun onNotify(event: Event, go: GameObject?) {
-        if(event.type == EventType.GameEngineStartPlay){
-            println("Starting play!")
-        }else if(event.type == EventType.GameEngineStopPlay) {
-            println("Ending play!")
+        when (event.type) {
+            EventType.GameEngineStartPlay -> {
+                runtimePlaying = true
+                currentScene.save()
+                changeScene(LevelEditorSceneInitializer(), false)
+            }
+            EventType.GameEngineStopPlay -> {
+                runtimePlaying = false
+                changeScene(LevelEditorSceneInitializer(), false)
+            }
+            EventType.LoadLevel -> changeScene(LevelEditorSceneInitializer(), false)
+            EventType.SaveLevel -> currentScene.save()
+            EventType.UserEvent -> TODO()
         }
     }
 

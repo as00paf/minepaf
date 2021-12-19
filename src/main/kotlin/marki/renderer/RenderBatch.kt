@@ -1,6 +1,8 @@
 package marki.renderer
 
+import components.Sprite
 import components.SpriteRenderer
+import marki.GameObject
 import marki.Window
 import org.joml.Matrix4f
 import org.joml.Vector4f
@@ -97,8 +99,8 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comp
         // Use shader
         val shader = Renderer.getBoundShader()
         shader.use()
-        shader.uploadMat4f("uProjection", Window.getScene().camera().getProjectionMatrix())
-        shader.uploadMat4f("uView", Window.getScene().camera().getViewMatrix())
+        shader.uploadMat4f("uProjection", Window.getScene().camera.getProjectionMatrix())
+        shader.uploadMat4f("uView", Window.getScene().camera.getViewMatrix())
 
         textures.forEachIndexed { index, texture ->
             glActiveTexture(GL_TEXTURE0 + index + 1)
@@ -236,9 +238,26 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comp
 
     fun zIndex() = zIndex
 
+    fun destroyIfExists(go: GameObject): Boolean {
+        val sprite = go.getComponent(SpriteRenderer::class.java)
+        for (i in 0 until spriteCount) {
+            if (sprites[i] === sprite) {
+                for (j in i until spriteCount - 1) {
+                    sprites[j] = sprites[j + 1]
+                    sprites[j]?.setDirty()
+                }
+                spriteCount--
+                return true
+            }
+        }
+
+        return false
+    }
+
     override fun compareTo(other: RenderBatch): Int {
         return zIndex.compareTo(other.zIndex)
     }
+
 }
 
 const val POS_SIZE = 2

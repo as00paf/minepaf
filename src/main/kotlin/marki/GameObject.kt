@@ -15,6 +15,7 @@ class GameObject(
         }
     }
 
+    private var isDead: Boolean = false
     private var doSerialization = true
     private var uId = ID_COUNTER++
 
@@ -32,18 +33,23 @@ class GameObject(
         }
     }
 
-    fun addComponent(component: Component){
+    fun addComponent(component: Component): GameObject{
         component.generateId()
         components.add(component)
         component.init(this)
+        return this
+    }
+
+    fun start(){
+        components.forEach { it.start() }
     }
 
     fun update(dt: Float) {
         components.forEach { it.update(dt) }
     }
 
-    fun start(){
-        components.forEach { it.start() }
+    fun editorUpdate(dt: Float) {
+        components.forEach { it.editorUpdate(dt) }
     }
 
     fun imgui() {
@@ -56,10 +62,18 @@ class GameObject(
     fun getUid() = uId
 
     fun getAllComponents(): List<Component> = components
-    fun setNoSerialize() {
+    fun setNoSerialize():GameObject {
         doSerialization = false
+        return this
     }
     fun doSerialization():Boolean {
         return doSerialization
+    }
+
+    fun isDead():Boolean = isDead
+
+    fun destroy() {
+        this.isDead = true
+        components.forEach { it.destroy() }
     }
 }

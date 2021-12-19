@@ -10,7 +10,7 @@ import java.lang.Integer.max
 
 class GridLines : Component() {
 
-    val camera = Window.getScene().camera()
+    val camera = Window.getScene().camera
     val cameraPos = camera.position
     val projectionSize = camera.getProjectionSize()
 
@@ -20,7 +20,7 @@ class GridLines : Component() {
         super.imgui()
     }
 
-    override fun update(dt: Float) {
+    override fun editorUpdate(dt: Float) {
       drawLines()
     }
 

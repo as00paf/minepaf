@@ -84,8 +84,8 @@ object DebugDraw {
         glBufferSubData(GL_ARRAY_BUFFER, 0, vertexArray.copyOfRange(0, lines.size * 6 * 2))
 
         shader.use()
-        shader.uploadMat4f("uProjection", Window.getScene().camera().getProjectionMatrix())
-        shader.uploadMat4f("uView", Window.getScene().camera().getViewMatrix())
+        shader.uploadMat4f("uProjection", Window.getScene().camera.getProjectionMatrix())
+        shader.uploadMat4f("uView", Window.getScene().camera.getViewMatrix())
 
         // Bind the vao
         glBindVertexArray(vaoId)
