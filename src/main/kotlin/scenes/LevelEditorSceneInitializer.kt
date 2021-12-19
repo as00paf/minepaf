@@ -92,7 +92,7 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                 )
             ) {
                 println("Button $i clicked")
-                val block = Prefabs.generateSpriteObject(sprite, 32f, 32f)
+                val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f)
                 levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
             }
             ImGui.popID()

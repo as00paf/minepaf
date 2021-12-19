@@ -26,7 +26,7 @@ class Renderer {
         }
 
         if(!added) {
-            val newBatch = RenderBatch(MAX_BATCH_SIZE, sprite.gameObject.transform.zIndex)
+            val newBatch = RenderBatch(MAX_BATCH_SIZE, sprite.gameObject.transform.zIndex, this)
             newBatch.start()
             batches.add(newBatch)
             newBatch.addSprite(sprite)
@@ -36,7 +36,10 @@ class Renderer {
 
     fun render() {
         currentShader.use()
-        batches.forEach { it.render() }
+        for (i in batches.indices) {
+            val batch = batches[i]
+            batch.render()
+        }
     }
 
     fun destroyGameObject(deadObject: GameObject) {
@@ -48,7 +51,7 @@ class Renderer {
     }
 
     fun destroyGameObjects(deadObjects: List<GameObject>) {
-
+        deadObjects.forEach { destroyGameObject(it) }
     }
 
     companion object {

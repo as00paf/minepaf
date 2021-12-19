@@ -7,16 +7,25 @@ object KeyListener {
     fun get(): KeyListener = this
 
     private var keyPressed = BooleanArray(350)
+    private var keyBeginPressed = BooleanArray(350)
 
     fun keyCallback(window: Long, key: Int, scanCode: Int, action: Int, mods: Int) {
         if(key > -1){
             if(action == GLFW_PRESS) {
-                this.keyPressed[key] = true
+                keyPressed[key] = true
+                keyBeginPressed[key] = true
             } else if(action == GLFW_RELEASE){
-                this.keyPressed[key] = false
+                keyPressed[key] = false
+                keyBeginPressed[key] = false
             }
         }
     }
 
     fun isKeyPressed(key: Int):Boolean = keyPressed[key]
+
+    fun keyBeginPress(key: Int): Boolean {
+        val result = keyBeginPressed[key]
+        if(result) keyBeginPressed[key] = false
+        return result
+    }
 }

@@ -10,6 +10,6 @@ class Box2DCollider: Collider() {
 
     override fun editorUpdate(dt: Float) {
         val center = Vector2f(gameObject.transform.position).add(offset)
-        DebugDraw.addBox2D(center, halfSize, gameObject.transform.rotation.toDouble())
+        DebugDraw.addBox2D(center, halfSize, gameObject.transform.rotation)
     }
 }

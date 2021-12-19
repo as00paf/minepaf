@@ -2,6 +2,7 @@ package components
 
 import editor.MImGui
 import imgui.internal.ImGui
+import imgui.type.ImInt
 import marki.GameObject
 import org.joml.Vector2f
 import org.joml.Vector3f
@@ -76,11 +77,40 @@ abstract class Component {
                         }
                     }
                 }
+
+                if(type.isEnum) {
+                    val enumValues = getEnumValues(type as Class<Enum<*>>)
+                    val enumType = (value as Enum<*>).name
+                    val index = ImInt(indexOf(enumType, enumValues))
+                    if(ImGui.combo(field.name, index, enumValues, enumValues.size)) {
+                        field.set(this, type.enumConstants[index.get()])
+                    }
+                }
+
                 if (isPrivate) field.isAccessible = false
             }
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
         }
+    }
+
+    private fun <T:Enum<T>> getEnumValues(type: Class<T>): Array<String> {
+        val enumValues = arrayOfNulls<String>(type.enumConstants.size)
+        var i = 0
+        for (enumIntegerValue in type.enumConstants) {
+            enumValues[i] = enumIntegerValue.name
+            i++
+        }
+        return enumValues.filterNotNull().toTypedArray()
+    }
+
+    private fun indexOf(str: String, arr: Array<String>): Int {
+        for (i in arr.indices) {
+            if (str == arr[i]) {
+                return i
+            }
+        }
+        return -1
     }
 
     fun generateId() {

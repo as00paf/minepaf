@@ -10,7 +10,9 @@ class Camera(var position: Vector2f = Vector2f()) {
     private var projectionMatrix: Matrix4f = Matrix4f()
     private var inverseProjection: Matrix4f = Matrix4f()
     private var inverseView: Matrix4f = Matrix4f()
-    private val projectionSize = Vector2f(32f * 40f, 32f * 21f)
+    private val projectionWidth = 6f
+    private val projectionHeight = 3f
+    private val projectionSize = Vector2f(projectionWidth, projectionHeight)
     var zoom = 1f
 
     init {

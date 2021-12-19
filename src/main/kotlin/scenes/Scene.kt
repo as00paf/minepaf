@@ -3,20 +3,18 @@ package scenes
 import com.google.gson.GsonBuilder
 import components.Component
 import components.ComponentDeserializer
-import imgui.ImGui
 import marki.Camera
 import marki.GameObject
 import marki.GameObjectSerializer
 import marki.Transform
 import marki.renderer.Renderer
-import org.joml.Vector2f
 import physics2d.Physics2d
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class Scene(private val initializer:SceneInitializer, val camera: Camera = Camera()) {
+class Scene(private val initializer: SceneInitializer, val camera: Camera = Camera()) {
 
     val gameObjects = mutableListOf<GameObject>()
     val renderer = Renderer()
@@ -29,12 +27,12 @@ class Scene(private val initializer:SceneInitializer, val camera: Camera = Camer
         .registerTypeAdapter(GameObject::class.java, GameObjectSerializer())
         .create()
 
-    fun init(){
+    fun init() {
         initializer.loadResources(this)
         initializer.init(this)
     }
 
-    fun start(){
+    fun start() {
         gameObjects.forEach { go ->
             go.start()
             renderer.add(go)
@@ -44,9 +42,9 @@ class Scene(private val initializer:SceneInitializer, val camera: Camera = Camer
     }
 
     fun addGameObjectToScene(gameObject: GameObject) {
-        if(!isRunning) {
+        if (!isRunning) {
             gameObjects.add(gameObject)
-        }else{
+        } else {
             gameObjects.add(gameObject)
             gameObject.start()
             renderer.add(gameObject)
@@ -58,23 +56,43 @@ class Scene(private val initializer:SceneInitializer, val camera: Camera = Camer
         return gameObjects.firstOrNull { it.getUid() == id }
     }
 
-    fun editorUpdate(dt: Float){
+    fun editorUpdate(dt: Float) {
         camera.adjustProjection()
-        gameObjects.forEach { it.editorUpdate(dt) }
+
+        var i = 0
+        while (i < gameObjects.size) {
+            val go = gameObjects[i]
+            go.editorUpdate(dt)
+            if (go.isDead()) {
+                gameObjects.removeAt(i)
+                renderer.destroyGameObject(go)
+                physics2d.destroyGameObject(go)
+                i--
+            }
+            i++
+        }
     }
 
-    fun update(dt: Float){
+
+    fun update(dt: Float) {
         camera.adjustProjection()
         physics2d.update(dt)
 
-        gameObjects.forEach { it.update(dt) }
-        val deadObjects = gameObjects.filter { it.isDead() }
-        gameObjects.removeIf { it.isDead() }
-        renderer.destroyGameObjects(deadObjects)
-        physics2d.destroyGameObjects(deadObjects)
+        var i = 0
+        while (i < gameObjects.size) {
+            val go = gameObjects[i]
+            go.update(dt)
+            if (go.isDead()) {
+                gameObjects.removeAt(i)
+                renderer.destroyGameObject(go)
+                physics2d.destroyGameObject(go)
+                i--
+            }
+            i++
+        }
     }
 
-    fun render(){
+    fun render() {
         this.renderer.render()
     }
 
@@ -82,7 +100,7 @@ class Scene(private val initializer:SceneInitializer, val camera: Camera = Camer
         initializer.imgui()
     }
 
-    fun createGameObject(name: String):GameObject {
+    fun createGameObject(name: String): GameObject {
         val go = GameObject(name)
         go.addComponent(Transform())
         go.transform = go.getComponent(Transform::class.java)!!
@@ -94,7 +112,7 @@ class Scene(private val initializer:SceneInitializer, val camera: Camera = Camer
             val writer = FileWriter("level.txt")
             writer.write(gson.toJson(gameObjects.filter { it.doSerialization() }))
             writer.close()
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
         }
     }
@@ -103,25 +121,25 @@ class Scene(private val initializer:SceneInitializer, val camera: Camera = Camer
         var inFile = ""
         try {
             inFile = String(Files.readAllBytes(Paths.get("level.txt")))
-        }catch (e: IOException){
+        } catch (e: IOException) {
             println("Error: Could not find level.txt")
             //e.printStackTrace()
         }
 
-        if(inFile.isNotBlank()){
+        if (inFile.isNotBlank()) {
             var maxGoId = -1
             var maxCompId = -1
-            val objs:Array<GameObject> = gson.fromJson(inFile, Array<GameObject>::class.java)
+            val objs: Array<GameObject> = gson.fromJson(inFile, Array<GameObject>::class.java)
             objs.forEach { obj ->
                 addGameObjectToScene(obj)
 
                 obj.getAllComponents().forEach { component ->
-                    if(component.getUid() > maxCompId) {
+                    if (component.getUid() > maxCompId) {
                         maxCompId = component.getUid()
                     }
                 }
 
-                if(obj.getUid() > maxGoId) {
+                if (obj.getUid() > maxGoId) {
                     maxGoId = obj.getUid()
                 }
             }

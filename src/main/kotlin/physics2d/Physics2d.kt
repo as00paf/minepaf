@@ -26,7 +26,7 @@ class Physics2d {
             val tranform = go.transform
 
             val bodyDef = BodyDef()
-            bodyDef.angle = Math.toRadians(tranform.rotation.toDouble()).toFloat()
+            bodyDef.angle = Math.toRadians(tranform.rotation).toFloat()
             bodyDef.position.set(tranform.position.x, tranform.position.y)
             bodyDef.angularDamping = rb.angularDamping
             bodyDef.linearDamping = rb.linearDamping
@@ -44,7 +44,7 @@ class Physics2d {
             if(collider is CircleCollider) {
                 shape.radius = collider.radius
             } else if (collider is Box2DCollider) {
-                val halfSize = Vector2f(collider.halfSize.mul(0.5f))
+                val halfSize = Vector2f(collider.halfSize).mul(0.5f)
                 val offset = collider.offset
                 val origin = Vector2f(collider.origin)
                 shape.setAsBox(halfSize.x, halfSize.y, Vec2(origin.x, origin.y), 0f)

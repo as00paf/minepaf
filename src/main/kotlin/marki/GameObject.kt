@@ -1,7 +1,11 @@
 package marki
 
+import com.google.gson.GsonBuilder
 import components.Component
+import components.ComponentDeserializer
+import components.SpriteRenderer
 import imgui.internal.ImGui
+import util.AssetPool
 import util.extensions.findByClass
 
 class GameObject(
@@ -60,6 +64,7 @@ class GameObject(
     }
 
     fun getUid() = uId
+    fun generateUid() { uId = ID_COUNTER++ }
 
     fun getAllComponents(): List<Component> = components
     fun setNoSerialize():GameObject {
@@ -75,5 +80,26 @@ class GameObject(
     fun destroy() {
         this.isDead = true
         components.forEach { it.destroy() }
+    }
+
+    fun copy(): GameObject {
+        val gson = GsonBuilder()
+            .registerTypeAdapter(Component::class.java, ComponentDeserializer())
+            .registerTypeAdapter(GameObject::class.java, GameObjectSerializer())
+            .create()
+
+        val objAsJSON = gson.toJson(this)
+        val result = gson.fromJson(objAsJSON, GameObject::class.java)
+        result.generateUid()
+        result.getAllComponents().forEach {
+            it.generateId()
+        }
+
+        val sprite = result.getComponent(SpriteRenderer::class.java)
+        sprite?.getTexture()?.let{
+            sprite.setTexture(AssetPool.getTexture(it.getFilePath().orEmpty()))
+        }
+
+        return result
     }
 }

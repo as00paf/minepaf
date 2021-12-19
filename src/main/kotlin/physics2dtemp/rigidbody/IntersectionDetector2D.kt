@@ -178,7 +178,7 @@ object IntersectionDetector2D {
         result?.let { RaycastResult.reset(it) }
 
         val size = box.getHalfSize()
-        val body = box.rigidBody ?: return false
+        val body = box.rigidBody
         val xAxis = Vector2f(1f, 0f)
         val yAxis = Vector2f(0f, 1f)
         JMath.rotate(xAxis, Vector2f(0f, 0f), -body.rotation.toDouble())

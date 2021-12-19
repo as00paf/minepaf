@@ -22,16 +22,21 @@ class SpriteRenderer(
     }
 
     override fun update(dt: Float) {
-        if(lastTransform != gameObject.transform) {
+        if (lastTransform != gameObject.transform) {
             gameObject.transform.copy(lastTransform)
             isDirty = true
         }
     }
 
     override fun editorUpdate(dt: Float) {
-        if(lastTransform != gameObject.transform) {
+        if (lastTransform != gameObject.transform) {
             gameObject.transform.copy(lastTransform)
             isDirty = true
+        }
+
+        if(lastTransform.rotation != gameObject.transform.rotation) {
+            //println("will update")
+            //isDirty = true
         }
     }
 

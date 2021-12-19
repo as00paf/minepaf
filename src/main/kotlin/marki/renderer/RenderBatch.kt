@@ -1,6 +1,5 @@
 package marki.renderer
 
-import components.Sprite
 import components.SpriteRenderer
 import marki.GameObject
 import marki.Window
@@ -13,7 +12,9 @@ import org.lwjgl.opengl.GL20C.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.glBindVertexArray
 import org.lwjgl.opengl.GL30.glGenVertexArrays
 
-class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comparable<RenderBatch> {
+
+class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int, private val renderer: Renderer) :
+    Comparable<RenderBatch> {
     // Vertex
     // ======
     // Pos                  Color                                   Text coords         texId       entityId
@@ -82,13 +83,23 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comp
 
     fun render() {
         var rebufferData = false
-        for (index in 0..spriteCount) {
-            val sprite = sprites[index]
-            if (sprite?.isDirty() == true) {
-                loadVertexProperties(index)
-                sprite.setClean()
+
+        var i = 0
+        while (i < spriteCount) {
+            val spr = sprites[i]!!
+            if (spr.isDirty()) {
+                loadVertexProperties(i)
+                spr.setClean()
                 rebufferData = true
             }
+
+            // TODO: get better solution for this
+            if (spr.gameObject.transform.zIndex != zIndex) {
+                destroyIfExists(spr.gameObject)
+                renderer.add(spr.gameObject)
+                i--
+            }
+            i++
         }
 
         if (rebufferData) {
@@ -150,36 +161,38 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int) : Comp
         val texCoords = sprite.getTextCoords()
 
         val transform = sprite.gameObject.transform
-        val isRotated = transform.rotation != 0f
+        val isRotated = transform.rotation != 0.0
         val transformMatrix = Matrix4f().identity()
-        if(isRotated) {
+        if (isRotated) {
             transformMatrix.translate(
                 transform.position.x,
                 transform.position.y,
-                0f)
-            transformMatrix.rotate(Math.toRadians(transform.rotation.toDouble()).toFloat(), 0f, 0f, 1f)
+                0f
+            )
+            transformMatrix.rotate(Math.toRadians(transform.rotation).toFloat(), 0f, 0f, 1f)
             transformMatrix.scale(transform.scale.x, transform.scale.y, 1f)
         }
 
         // Add vertices with the appropriate properties
-        var xAdd = 1.0f
-        var yAdd = 1.0f
+        var xAdd = 0.5f
+        var yAdd = 0.5f
         for (i in 0 until 4) {
             when (i) {
-                1 -> yAdd = 0f
-                2 -> xAdd = 0f
-                3 -> yAdd = 1.0f
+                1 -> yAdd = -0.5f
+                2 -> xAdd = -0.5f
+                3 -> yAdd = 0.5f
             }
 
             // Load position
             val go = sprite.gameObject
-            val currentPos = Vector4f(
+            var currentPos = Vector4f(
                 go.transform.position.x + (xAdd * go.transform.scale.x),
                 go.transform.position.y + (yAdd * go.transform.scale.y),
-                0f, 1f)
+                0f, 1f
+            )
 
-            if(isRotated) {
-                currentPos.set(Vector4f(xAdd, yAdd, 0f, 1f).mul(transformMatrix))
+            if (isRotated) {
+                currentPos = Vector4f(xAdd, yAdd, 0f, 1f).mul(transformMatrix)
             }
 
             vertices[offset] = currentPos.x

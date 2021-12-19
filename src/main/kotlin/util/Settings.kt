@@ -1,6 +1,6 @@
 package util
 
 object Settings {
-    val GRID_WIDTH = 32
-    val GRID_HEIGHT = 32
+    const val GRID_WIDTH = 0.25f
+    const val GRID_HEIGHT = 0.25f
 }

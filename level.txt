@@ -2,14 +2,14 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 48,
+    "uId": 0,
     "components": [
       {
         "type": "marki.Transform",
         "properties": {
           "position": {
-            "x": 608.0,
-            "y": 480.0
+            "x": 608.30804,
+            "y": 480.97894
           },
           "scale": {
             "x": 32.0,
@@ -79,8 +79,8 @@
         "type": "physics2d.components.Box2DCollider",
         "properties": {
           "halfSize": {
-            "x": 26.225,
-            "y": 24.525
+            "x": 0.001600647,
+            "y": 2.4414062E-4
           },
           "origin": {
             "x": 0.0,
@@ -99,7 +99,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 49,
+    "uId": 1,
     "components": [
       {
         "type": "marki.Transform",
@@ -162,7 +162,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 50,
+    "uId": 2,
     "components": [
       {
         "type": "marki.Transform",
@@ -225,7 +225,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 51,
+    "uId": 3,
     "components": [
       {
         "type": "marki.Transform",
@@ -280,6 +280,452 @@
             "w": 1.0
           },
           "uId": 47
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 4,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 2.2598703,
+            "y": 2.1214347
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 60.900001525878906,
+          "zIndex": 0,
+          "uId": 67
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.2,
+                "y": 0.5
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.1,
+                "y": 0.0
+              },
+              {
+                "x": 0.1,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 68
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 88
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 16.7,
+          "bodyType": "Dynamic",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 89
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 5,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 2.0281692,
+            "y": 1.7336984
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uId": 94
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.2,
+                "y": 0.5
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.1,
+                "y": 0.0
+              },
+              {
+                "x": 0.1,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 95
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 96
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 97
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 11,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uId": 117
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.3,
+                "y": 0.5
+              },
+              {
+                "x": 0.3,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 118
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 12,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 1.25,
+            "y": 1.0
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uId": 119
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.3,
+                "y": 0.5
+              },
+              {
+                "x": 0.3,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 120
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 13,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 1.5,
+            "y": 1.0
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uId": 121
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.3,
+                "y": 0.5
+              },
+              {
+                "x": 0.3,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 122
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 14,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 1.75,
+            "y": 1.0
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uId": 123
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.3,
+                "y": 0.5
+              },
+              {
+                "x": 0.3,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 124
         }
       }
     ],
