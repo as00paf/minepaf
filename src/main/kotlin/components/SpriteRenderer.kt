@@ -12,8 +12,6 @@ class SpriteRenderer(
     private var color: Vector4f = Vector4f(1f, 1f, 1f, 1f)
 ) : Component() {
 
-    constructor(color: Vector4f): this(Sprite(), color)
-
     @Transient private var lastTransform: Transform = Transform()
     @Transient private var isDirty = true
 

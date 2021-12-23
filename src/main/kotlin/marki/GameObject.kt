@@ -32,7 +32,7 @@ class GameObject(
     }
 
     fun <T> removeComponent(componentClass: Class<T>) {
-        components.findByClass(componentClass::class)?.let{
+        components.firstOrNull { componentClass.isAssignableFrom(it.javaClass)}?.let {
             components.remove(it)
         }
     }
@@ -101,5 +101,9 @@ class GameObject(
         }
 
         return result
+    }
+
+    override fun toString(): String {
+        return super.toString() + "::$name"
     }
 }

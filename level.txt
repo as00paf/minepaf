@@ -2,7 +2,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 299,
+    "uId": 0,
     "components": [
       {
         "type": "marki.Transform",
@@ -99,7 +99,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 300,
+    "uId": 1,
     "components": [
       {
         "type": "marki.Transform",
@@ -162,7 +162,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 301,
+    "uId": 2,
     "components": [
       {
         "type": "marki.Transform",
@@ -225,7 +225,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 302,
+    "uId": 3,
     "components": [
       {
         "type": "marki.Transform",
@@ -288,7 +288,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 303,
+    "uId": 4,
     "components": [
       {
         "type": "marki.Transform",
@@ -385,7 +385,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 304,
+    "uId": 5,
     "components": [
       {
         "type": "marki.Transform",
@@ -482,7 +482,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 305,
+    "uId": 6,
     "components": [
       {
         "type": "marki.Transform",
@@ -579,7 +579,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 306,
+    "uId": 7,
     "components": [
       {
         "type": "marki.Transform",
@@ -676,7 +676,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 307,
+    "uId": 8,
     "components": [
       {
         "type": "marki.Transform",
@@ -773,7 +773,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 308,
+    "uId": 9,
     "components": [
       {
         "type": "marki.Transform",
@@ -870,7 +870,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 309,
+    "uId": 10,
     "components": [
       {
         "type": "marki.Transform",

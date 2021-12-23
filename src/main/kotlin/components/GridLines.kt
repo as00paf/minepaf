@@ -2,6 +2,7 @@ package components
 
 import marki.Window
 import marki.renderer.DebugDraw
+import org.jbox2d.common.MathUtils.floor
 import org.joml.Vector2f
 import org.joml.Vector3f
 import util.Settings.GRID_HEIGHT
@@ -24,8 +25,8 @@ class GridLines : Component() {
         cameraPos = camera.position
         projectionSize = camera.getProjectionSize()
 
-        val firstX = ((cameraPos.x / GRID_WIDTH) -1) * GRID_WIDTH
-        val firstY = ((cameraPos.y / GRID_HEIGHT) -1) * GRID_HEIGHT
+        val firstX = (floor(cameraPos.x / GRID_WIDTH) - 1) * GRID_HEIGHT
+        val firstY = (floor(cameraPos.y / GRID_HEIGHT) - 1) * GRID_HEIGHT
 
         val numVtLines = (projectionSize.x * camera.zoom / GRID_WIDTH).toInt() + 2
         val numHzLines = (projectionSize.y * camera.zoom  / GRID_HEIGHT).toInt() + 2

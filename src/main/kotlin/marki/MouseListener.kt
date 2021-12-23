@@ -121,8 +121,6 @@ object MouseListener {
 
     fun getX(): Float = xPos.toFloat()
     fun getY(): Float = yPos.toFloat()
-    fun getDx(): Float = (lastX - xPos).toFloat()
-    fun getDy(): Float = (lastY - yPos).toFloat()
     fun getWorldDx(): Float = (lastWorldX - worldX).toFloat()
     fun getWorldDy(): Float = (lastWorldY - worldY).toFloat()
     fun getScrollX(): Float = scrollX.toFloat()
