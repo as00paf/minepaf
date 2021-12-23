@@ -9,7 +9,7 @@ import util.AssetPool
 import util.extensions.findByClass
 
 class GameObject(
-    val name: String,
+    var name: String,
 ) {
     companion object {
         private var ID_COUNTER: Int = 0

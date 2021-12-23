@@ -12,6 +12,7 @@ class Transform(
 ): Component() {
 
     override fun imgui() {
+        gameObject.name = MImGui.inputText("Name: ", gameObject.name)
         MImGui.drawVec2Control("Position", position)
         MImGui.drawVec2Control("Scale", scale, 32f)
         this.rotation = MImGui.dragFloat("Rotation", rotation.toFloat()).toDouble()

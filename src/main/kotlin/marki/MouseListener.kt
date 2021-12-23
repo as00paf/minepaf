@@ -1,13 +1,10 @@
 package marki
 
-import marki.Window.getScene
+import org.joml.Matrix4f
 import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
 import org.lwjgl.glfw.GLFW.GLFW_RELEASE
-import org.joml.Matrix4f
-
-
 
 
 object MouseListener {
@@ -28,7 +25,7 @@ object MouseListener {
     private val gameViewportSize = Vector2f()
 
     fun mousePosCallback(window: Long, xpos: Double, ypos: Double) {
-        if(mouseButtonsDown > 0) isDragging = true
+        if (mouseButtonsDown > 0) isDragging = true
         this.lastX = this.xPos
         this.lastY = this.yPos
         this.lastWorldX = worldX
@@ -83,7 +80,7 @@ object MouseListener {
         currentX = currentX / gameViewportSize.x * 2.0f - 1.0f
         val tmp = Vector4f(currentX, 0f, 0f, 1f)
 
-        val camera = getScene().camera
+        val camera = Window.currentScene.camera
         val viewProjection = Matrix4f()
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
         tmp.mul(viewProjection)
@@ -100,7 +97,7 @@ object MouseListener {
         currentY = -(currentY / gameViewportSize.y * 2.0f - 1.0f)
         val tmp = Vector4f(0f, currentY, 0f, 1f)
 
-        val camera = getScene().camera
+        val camera = Window.currentScene.camera
         val viewProjection = Matrix4f()
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
         tmp.mul(viewProjection)

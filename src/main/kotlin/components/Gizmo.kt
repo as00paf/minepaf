@@ -2,9 +2,11 @@ package components
 
 import editor.PropertiesWindow
 import marki.*
+import marki.renderer.DebugDraw
 import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.*
+import physics2dtemp.primitives.Collider2D
 
 open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: PropertiesWindow):Component() {
 
@@ -13,14 +15,16 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     private val yAxisColor = Vector4f(0.3f, 1f, 0.3f, 1f)
     private val yAxisColorHover = Vector4f(0f, 1f, 0f, 1f)
 
-    private val gizmoWidth = 16f / 80f
-    private val gizmoHeight = 48f / 80f
+    private val scale = 100f
+
+    private val gizmoWidth = 16f / scale
+    private val gizmoHeight = 48f / scale
     private val xAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1)
     private val yAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1)
     private var xAxisSprite = xAxisObject.getComponent(SpriteRenderer::class.java)
     private var yAxisSprite = yAxisObject.getComponent(SpriteRenderer::class.java)
-    private var xAxisOffset = Vector2f(24f / 80f, -6f / 80f)
-    private var yAxisOffset = Vector2f(-7f / 80f, 21f / 80f)
+    private var xAxisOffset = Vector2f(24f / scale, -6f / scale)
+    private var yAxisOffset = Vector2f(-7f / scale, 21f / scale)
 
     protected var xAxisActive = false
     protected var yAxisActive = false
@@ -32,8 +36,8 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     init {
         xAxisObject.addComponent(NonPickable())
         yAxisObject.addComponent(NonPickable())
-        Window.getScene().addGameObjectToScene(xAxisObject)
-        Window.getScene().addGameObjectToScene(yAxisObject)
+        Window.currentScene.addGameObjectToScene(xAxisObject)
+        Window.currentScene.addGameObjectToScene(yAxisObject)
     }
 
     override fun start() {
@@ -59,7 +63,7 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
             // TODO : move this into its own keyEditorBinding component class
             if(KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW_KEY_D)) {
                 val newObject = go.copy()
-                Window.getScene().addGameObjectToScene(newObject)
+                Window.currentScene.addGameObjectToScene(newObject)
                 newObject.transform.position.add(0.1f, 0.1f)
                 propertiesWindow.activeGameObject = newObject
                 return
@@ -108,14 +112,12 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
         yAxisSprite?.setColor(Vector4f(0f, 0f, 0f, 0f))
     }
 
-    fun checkXHoverState(): Boolean {
+    private fun checkXHoverState(): Boolean {
         val mousePos = Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY())
         if(
-            mousePos.x <= xAxisObject.transform.position.x + (gizmoHeight / 2f) &&
-            mousePos.x >= xAxisObject.transform.position.x - (gizmoWidth  / 2f) &&
-            mousePos.y >= xAxisObject.transform.position.y - (gizmoHeight / 2f) &&
-            mousePos.y <= xAxisObject.transform.position.y + (gizmoWidth / 2f)) {
-
+            mousePos.x in xAxisObject.transform.position.x - (gizmoHeight / 2f)..xAxisObject.transform.position.x + (gizmoHeight / 2f) &&
+            mousePos.y in xAxisObject.transform.position.y..xAxisObject.transform.position.y + (gizmoWidth)
+        ) {
             xAxisSprite?.setColor(xAxisColorHover)
             return true
         }
@@ -124,7 +126,7 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
         return false
     }
 
-    fun checkYHoverState(): Boolean {
+    private fun checkYHoverState(): Boolean {
         val mousePos = Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY())
         if(
             mousePos.x <= yAxisObject.transform.position.x + (gizmoWidth / 2f) &&

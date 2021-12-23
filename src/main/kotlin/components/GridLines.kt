@@ -10,7 +10,7 @@ import kotlin.math.max
 
 class GridLines : Component() {
 
-    val camera = Window.getScene().camera
+    val camera = Window.currentScene.camera
     var cameraPos = camera.position
     var projectionSize = camera.getProjectionSize()
 

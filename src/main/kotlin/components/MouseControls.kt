@@ -11,7 +11,7 @@ class MouseControls: Component() {
 
     fun pickUpObject(go: GameObject) {
         holdingObject = go
-        Window.getScene().addGameObjectToScene(go)
+        Window.currentScene.addGameObjectToScene(go)
     }
 
     fun place(){

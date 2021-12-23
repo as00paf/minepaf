@@ -2,13 +2,16 @@ package editor
 
 import imgui.ImGui
 import imgui.flag.ImGuiCol
+import imgui.flag.ImGuiInputTextFlags
 import imgui.flag.ImGuiStyleVar
+import imgui.type.ImString
 import org.joml.Vector2f
 import org.joml.Vector4f
 
 object MImGui {
 
-    const val DEFAULT_COMLUMN_WIDTH = 220f
+    private const val DEFAULT_COMLUMN_WIDTH = 220f
+    private const val sensibility = 0.01f
 
     fun drawVec2Control(label:String, values: Vector2f, resetValue: Float = 0f, columnWidth:Float = DEFAULT_COMLUMN_WIDTH){
         ImGui.pushID(label)
@@ -36,7 +39,7 @@ object MImGui {
 
         ImGui.sameLine()
         val vecValuesX = floatArrayOf(values.x)
-        ImGui.dragFloat("##x", vecValuesX, 0.1f)
+        ImGui.dragFloat("##x", vecValuesX, sensibility)
         ImGui.popItemWidth()
         ImGui.sameLine()
 
@@ -52,7 +55,7 @@ object MImGui {
 
         ImGui.sameLine()
         val vecValuesY = floatArrayOf(values.y)
-        ImGui.dragFloat("##y", vecValuesY, 0.1f)
+        ImGui.dragFloat("##y", vecValuesY, sensibility)
         ImGui.popItemWidth()
         ImGui.sameLine()
 
@@ -119,5 +122,27 @@ object MImGui {
         ImGui.popID()
 
         return res
+    }
+
+    fun inputText(label: String, initialValue: String): String {
+        ImGui.pushID(label)
+
+        ImGui.columns(2)
+        ImGui.setColumnWidth(0, DEFAULT_COMLUMN_WIDTH)
+        ImGui.text(label)
+        ImGui.nextColumn()
+
+        val maxLength = 256
+        val outString = ImString(initialValue, maxLength)
+        if(ImGui.inputText("##$label", outString, ImGuiInputTextFlags.CallbackCompletion or ImGuiInputTextFlags.EnterReturnsTrue)) {
+            ImGui.columns(1)
+            ImGui.popID()
+            return outString.get()
+        }
+
+        ImGui.columns(1)
+        ImGui.popID()
+
+        return initialValue
     }
 }

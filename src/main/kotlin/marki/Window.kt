@@ -1,10 +1,6 @@
 package marki
 
 import imgui.ImGui
-import imgui.flag.ImGuiConfigFlags
-import imgui.flag.ImGuiMouseCursor
-import imgui.gl3.ImGuiImplGl3
-import imgui.glfw.ImGuiImplGlfw
 import marki.renderer.*
 import observers.EventSystem
 import observers.Observer
@@ -23,28 +19,19 @@ import util.AssetPool
 import util.Time
 
 
-object Window:Observer {
+object Window : Observer {
     private val width: Int = 1920
     private val height: Int = 1080
     private val title = "MinePaf"
 
     private var glfwWindow: Long = -1L
+
+    lateinit var imGuiLayer: ImGuiLayer
     lateinit var currentScene: Scene
     lateinit var frameBuffer: FrameBuffer
     lateinit var pickingTexture: PickingTexture
 
-    private var r = 1.0f
-    private var g = 1.0f
-    private var b = 1.0f
-    private var a = 1.0f
     private var runtimePlaying = false
-
-    // Im GUI
-    val imGuiGlfw = ImGuiImplGlfw()
-    val imGuiGl3 = ImGuiImplGl3()
-    var glslVersion = "#version 130"
-    lateinit var imGuiLayer:ImGuiLayer
-    val mouseCursors = arrayOfNulls<Long>(ImGuiMouseCursor.COUNT)
 
     // TODO: remove
     fun get(): Window = this
@@ -67,8 +54,6 @@ object Window:Observer {
         pickingTexture = PickingTexture(1920, 1080)
         imGuiLayer = ImGuiLayer(pickingTexture)
         imGuiLayer.init(glfwWindow)
-        imGuiGlfw.init(glfwWindow, true)
-        imGuiGl3.init(glslVersion)
 
         EventSystem.addObserver(this)
 
@@ -140,13 +125,13 @@ object Window:Observer {
             DebugDraw.beginFrame()
 
             frameBuffer.bind()
-            glClearColor(r, g, b, a)
+            glClearColor(1f, 1f, 1f, 1f)
             glClear(GL_COLOR_BUFFER_BIT)
 
             if (dt > 0) {
                 DebugDraw.draw()
                 Renderer.bindShader(defaultShader)
-                if(runtimePlaying) currentScene.update(dt)
+                if (runtimePlaying) currentScene.update(dt)
                 else currentScene.editorUpdate(dt)
 
                 currentScene.render()
@@ -165,24 +150,11 @@ object Window:Observer {
     }
 
     private fun renderImGui(dt: Float, currentScene: Scene) {
-        imGuiGlfw.newFrame()
-        ImGui.newFrame()
-
         imGuiLayer.imGui(dt, currentScene)
-
-        imGuiGl3.renderDrawData(ImGui.getDrawData())
-
-        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-            val backupWindowPtr = glfwGetCurrentContext();
-            ImGui.updatePlatformWindows();
-            ImGui.renderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backupWindowPtr);
-        }
-        ImGui.endFrame()
     }
 
-    fun changeScene(initializer: SceneInitializer, isFirstScene: Boolean = false) {
-        if(!isFirstScene) currentScene.destroy()
+    private fun changeScene(initializer: SceneInitializer, isFirstScene: Boolean = false) {
+        if (!isFirstScene) currentScene.destroy()
 
         imGuiLayer.propertiesWindow.activeGameObject = null
 
@@ -210,15 +182,12 @@ object Window:Observer {
         }
     }
 
-    fun getScene(): Scene = currentScene
-    fun getWindowId() = glfwWindow
     fun getWidth() = width
     fun getHeight() = height
     fun getTargetAspectRatio() = 16f / 9f
 
     fun destroy() {
-        imGuiGl3.dispose()
-        imGuiGlfw.dispose()
+        imGuiLayer.destroy()
         ImGui.destroyContext()
         glfwFreeCallbacks(glfwWindow)
         glfwDestroyWindow(glfwWindow)

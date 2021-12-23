@@ -2,14 +2,14 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 0,
+    "uId": 299,
     "components": [
       {
         "type": "marki.Transform",
         "properties": {
           "position": {
-            "x": 608.30804,
-            "y": 480.97894
+            "x": 606.3162,
+            "y": 481.37582
           },
           "scale": {
             "x": 32.0,
@@ -94,12 +94,12 @@
         }
       }
     ],
-    "name": "Sprite_Object_Gen"
+    "name": "as"
   },
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 1,
+    "uId": 300,
     "components": [
       {
         "type": "marki.Transform",
@@ -162,7 +162,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 2,
+    "uId": 301,
     "components": [
       {
         "type": "marki.Transform",
@@ -225,7 +225,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 3,
+    "uId": 302,
     "components": [
       {
         "type": "marki.Transform",
@@ -288,14 +288,14 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 4,
+    "uId": 303,
     "components": [
       {
         "type": "marki.Transform",
         "properties": {
           "position": {
-            "x": 2.2598703,
-            "y": 2.1214347
+            "x": 1.3081459,
+            "y": 2.4179468
           },
           "scale": {
             "x": 0.25,
@@ -349,8 +349,8 @@
         "type": "physics2d.components.Box2DCollider",
         "properties": {
           "halfSize": {
-            "x": 0.25,
-            "y": 0.25
+            "x": 0.2,
+            "y": 0.2
           },
           "origin": {
             "x": 0.0,
@@ -380,19 +380,19 @@
         }
       }
     ],
-    "name": "Sprite_Object_Gen"
+    "name": "dynamic"
   },
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 5,
+    "uId": 304,
     "components": [
       {
         "type": "marki.Transform",
         "properties": {
           "position": {
-            "x": 2.0281692,
-            "y": 1.7336984
+            "x": 1.4801168,
+            "y": 1.9052669
           },
           "scale": {
             "x": 0.25,
@@ -477,12 +477,12 @@
         }
       }
     ],
-    "name": "Sprite_Object_Gen"
+    "name": "static"
   },
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 11,
+    "uId": 305,
     "components": [
       {
         "type": "marki.Transform",
@@ -538,6 +538,40 @@
           },
           "uId": 118
         }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 144
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 145
+        }
       }
     ],
     "name": "Sprite_Object_Gen"
@@ -545,7 +579,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 12,
+    "uId": 306,
     "components": [
       {
         "type": "marki.Transform",
@@ -560,7 +594,7 @@
           },
           "rotation": 0.0,
           "zIndex": 0,
-          "uId": 119
+          "uId": 117
         }
       },
       {
@@ -599,7 +633,41 @@
             "z": 1.0,
             "w": 1.0
           },
-          "uId": 120
+          "uId": 118
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 144
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 145
         }
       }
     ],
@@ -608,7 +676,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 13,
+    "uId": 307,
     "components": [
       {
         "type": "marki.Transform",
@@ -623,7 +691,7 @@
           },
           "rotation": 0.0,
           "zIndex": 0,
-          "uId": 121
+          "uId": 117
         }
       },
       {
@@ -662,7 +730,41 @@
             "z": 1.0,
             "w": 1.0
           },
-          "uId": 122
+          "uId": 118
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 144
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 145
         }
       }
     ],
@@ -671,7 +773,7 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 14,
+    "uId": 308,
     "components": [
       {
         "type": "marki.Transform",
@@ -686,7 +788,7 @@
           },
           "rotation": 0.0,
           "zIndex": 0,
-          "uId": 123
+          "uId": 117
         }
       },
       {
@@ -725,7 +827,138 @@
             "z": 1.0,
             "w": 1.0
           },
-          "uId": 124
+          "uId": 118
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 144
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 145
+        }
+      }
+    ],
+    "name": "Sprite_Object_Gen"
+  },
+  {
+    "isDead": false,
+    "doSerialization": true,
+    "uId": 309,
+    "components": [
+      {
+        "type": "marki.Transform",
+        "properties": {
+          "position": {
+            "x": 0.75,
+            "y": 1.0
+          },
+          "scale": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "rotation": 0.0,
+          "zIndex": 0,
+          "uId": 117
+        }
+      },
+      {
+        "type": "components.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "width": 32.0,
+            "height": 32.0,
+            "texture": {
+              "width": 320,
+              "height": 64,
+              "filePath": "assets/textures/blocksAndDecorations.png"
+            },
+            "texCoords": [
+              {
+                "x": 0.3,
+                "y": 0.5
+              },
+              {
+                "x": 0.3,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.0
+              },
+              {
+                "x": 0.2,
+                "y": 0.5
+              }
+            ]
+          },
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "uId": 118
+        }
+      },
+      {
+        "type": "physics2d.components.RigidBody2D",
+        "properties": {
+          "velocity": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "angularDamping": 0.8,
+          "linearDamping": 0.9,
+          "mass": 0.0,
+          "bodyType": "Static",
+          "fixedRotation": false,
+          "continuousCollision": true,
+          "uId": 144
+        }
+      },
+      {
+        "type": "physics2d.components.Box2DCollider",
+        "properties": {
+          "halfSize": {
+            "x": 0.25,
+            "y": 0.25
+          },
+          "origin": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "uId": 145
         }
       }
     ],

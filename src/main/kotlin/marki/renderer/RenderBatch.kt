@@ -110,8 +110,8 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int, privat
         // Use shader
         val shader = Renderer.getBoundShader()
         shader.use()
-        shader.uploadMat4f("uProjection", Window.getScene().camera.getProjectionMatrix())
-        shader.uploadMat4f("uView", Window.getScene().camera.getViewMatrix())
+        shader.uploadMat4f("uProjection", Window.currentScene.camera.getProjectionMatrix())
+        shader.uploadMat4f("uView", Window.currentScene.camera.getViewMatrix())
 
         textures.forEachIndexed { index, texture ->
             glActiveTexture(GL_TEXTURE0 + index + 1)

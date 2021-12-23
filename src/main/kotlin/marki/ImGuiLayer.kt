@@ -3,8 +3,11 @@ package marki
 import editor.GameViewWindow
 import editor.MenuBar
 import editor.PropertiesWindow
+import editor.SceneHierarchyWindow
 import imgui.ImFontConfig
 import imgui.ImGui
+import imgui.ImGuiIO
+import imgui.ImGuiViewport
 import imgui.callback.ImStrConsumer
 import imgui.callback.ImStrSupplier
 import imgui.flag.*
@@ -17,15 +20,24 @@ import imgui.flag.ImGuiWindowFlags
 import imgui.flag.ImGuiStyleVar
 
 import imgui.flag.ImGuiCond
+import imgui.gl3.ImGuiImplGl3
+import imgui.glfw.ImGuiImplGlfw
 import marki.renderer.PickingTexture
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.GL30.*
 
+
+const val glslVersion = "#version 130"
 
 class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
-    private val gameViewWindow = GameViewWindow()
     val propertiesWindow = PropertiesWindow(pickingTexture)
-    lateinit var menuBar: MenuBar
+
+    private val imGuiGlfw = ImGuiImplGlfw()
+    private val imGuiGl3 = ImGuiImplGl3()
+    private val menuBar = MenuBar()
+    private val gameViewWindow = GameViewWindow()
+    private val hierarchyWindow = SceneHierarchyWindow()
 
     fun init(glfwWindow: Long) {
         ImGui.createContext()
@@ -33,74 +45,42 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
         // IO
         val io = ImGui.getIO()
         io.iniFilename = "imgui.ini"
-        io.setConfigFlags(ImGuiConfigFlags.NavEnableKeyboard)
-        io.setConfigFlags(ImGuiConfigFlags.DockingEnable)
-        io.backendFlags = ImGuiBackendFlags.HasMouseCursors
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable or ImGuiConfigFlags.ViewportsEnable)
         io.backendPlatformName = "imgui_java_impl_glfw"
 
-        // Keyboard mapping
-        val keyMap = IntArray(ImGuiKey.COUNT)
-        keyMap[ImGuiKey.Tab] = GLFW.GLFW_KEY_TAB
-        keyMap[ImGuiKey.LeftArrow] = GLFW.GLFW_KEY_LEFT
-        keyMap[ImGuiKey.RightArrow] = GLFW.GLFW_KEY_RIGHT
-        keyMap[ImGuiKey.UpArrow] = GLFW.GLFW_KEY_UP
-        keyMap[ImGuiKey.DownArrow] = GLFW.GLFW_KEY_DOWN
-        keyMap[ImGuiKey.PageUp] = GLFW.GLFW_KEY_PAGE_UP
-        keyMap[ImGuiKey.PageDown] = GLFW.GLFW_KEY_PAGE_DOWN
-        keyMap[ImGuiKey.Home] = GLFW.GLFW_KEY_HOME
-        keyMap[ImGuiKey.End] = GLFW.GLFW_KEY_END
-        keyMap[ImGuiKey.Insert] = GLFW.GLFW_KEY_INSERT
-        keyMap[ImGuiKey.Delete] = GLFW.GLFW_KEY_DELETE
-        keyMap[ImGuiKey.Backspace] = GLFW.GLFW_KEY_BACKSPACE
-        keyMap[ImGuiKey.Space] = GLFW.GLFW_KEY_SPACE
-        keyMap[ImGuiKey.Enter] = GLFW.GLFW_KEY_ENTER
-        keyMap[ImGuiKey.Escape] = GLFW.GLFW_KEY_ESCAPE
-        keyMap[ImGuiKey.KeyPadEnter] = GLFW.GLFW_KEY_KP_ENTER
-        keyMap[ImGuiKey.A] = GLFW.GLFW_KEY_A
-        keyMap[ImGuiKey.C] = GLFW.GLFW_KEY_C
-        keyMap[ImGuiKey.V] = GLFW.GLFW_KEY_V
-        keyMap[ImGuiKey.X] = GLFW.GLFW_KEY_X
-        keyMap[ImGuiKey.Y] = GLFW.GLFW_KEY_Y
-        keyMap[ImGuiKey.Z] = GLFW.GLFW_KEY_Z
-        io.setKeyMap(keyMap)
+        setCallbacks(glfwWindow, io)
+        setupFonts(io)
 
-        // Mouse cursors mapping
-        Window.mouseCursors[ImGuiMouseCursor.Arrow] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.TextInput] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.ResizeAll] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.ResizeNS] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_VRESIZE_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.ResizeEW] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.ResizeNESW] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.ResizeNWSE] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.Hand] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HAND_CURSOR)
-        Window.mouseCursors[ImGuiMouseCursor.NotAllowed] = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR)
+        imGuiGlfw.init(glfwWindow, true)
+        imGuiGl3.init(glslVersion)
+    }
 
-        // GLFW callbacks to handle user input
+    private fun setCallbacks(glfwWindow: Long, io: ImGuiIO) {
         glfwSetKeyCallback(glfwWindow) { w: Long, key: Int, scancode: Int, action: Int, mods: Int ->
-             if (action == GLFW_PRESS) {
-                 io.setKeysDown(key, true)
-             } else if (action == GLFW_RELEASE) {
-                 io.setKeysDown(key, false)
-             }
-             io.keyCtrl = io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL)
-             io.keyShift = io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT)
-             io.keyAlt = io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT)
-             io.keySuper = io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER)
+            if (action == GLFW_PRESS) {
+                io.setKeysDown(key, true)
+            } else if (action == GLFW_RELEASE) {
+                io.setKeysDown(key, false)
+            }
+            io.keyCtrl = io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL)
+            io.keyShift = io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT)
+            io.keyAlt = io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT)
+            io.keySuper = io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER)
 
-             if(!io.wantCaptureKeyboard) {
-                 KeyListener.keyCallback(w, key, scancode, action, mods)
-             }
-         }
+            if(!io.wantCaptureKeyboard) {
+                KeyListener.keyCallback(w, key, scancode, action, mods)
+            }
+        }
 
-        GLFW.glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback)
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback)
 
-        GLFW.glfwSetMouseButtonCallback(glfwWindow) { w: Long, button: Int, action: Int, mods: Int ->
+        glfwSetMouseButtonCallback(glfwWindow) { w: Long, button: Int, action: Int, mods: Int ->
             val mouseDown = BooleanArray(5)
-            mouseDown[0] = button == GLFW.GLFW_MOUSE_BUTTON_1 && action != GLFW.GLFW_RELEASE
-            mouseDown[1] = button == GLFW.GLFW_MOUSE_BUTTON_2 && action != GLFW.GLFW_RELEASE
-            mouseDown[2] = button == GLFW.GLFW_MOUSE_BUTTON_3 && action != GLFW.GLFW_RELEASE
-            mouseDown[3] = button == GLFW.GLFW_MOUSE_BUTTON_4 && action != GLFW.GLFW_RELEASE
-            mouseDown[4] = button == GLFW.GLFW_MOUSE_BUTTON_5 && action != GLFW.GLFW_RELEASE
+            mouseDown[0] = button == GLFW_MOUSE_BUTTON_1 && action != GLFW_RELEASE
+            mouseDown[1] = button == GLFW_MOUSE_BUTTON_2 && action != GLFW_RELEASE
+            mouseDown[2] = button == GLFW_MOUSE_BUTTON_3 && action != GLFW_RELEASE
+            mouseDown[3] = button == GLFW_MOUSE_BUTTON_4 && action != GLFW_RELEASE
+            mouseDown[4] = button == GLFW_MOUSE_BUTTON_5 && action != GLFW_RELEASE
             io.setMouseDown(mouseDown)
             if (!io.wantCaptureMouse && mouseDown[1]) {
                 ImGui.setWindowFocus(null)
@@ -111,7 +91,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
             }
         }
 
-        GLFW.glfwSetScrollCallback(glfwWindow) { w: Long, xOffset: Double, yOffset: Double ->
+        glfwSetScrollCallback(glfwWindow) { w: Long, xOffset: Double, yOffset: Double ->
             io.mouseWheelH = io.mouseWheelH + xOffset.toFloat()
             io.mouseWheel = io.mouseWheel + yOffset.toFloat()
 
@@ -122,19 +102,20 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
         io.setSetClipboardTextFn(object : ImStrConsumer() {
             override fun accept(s: String) {
-                GLFW.glfwSetClipboardString(glfwWindow, s)
+                glfwSetClipboardString(glfwWindow, s)
             }
         })
 
         io.setGetClipboardTextFn(object : ImStrSupplier() {
             override fun get(): String {
-                val clipboardString = GLFW.glfwGetClipboardString(glfwWindow)
+                val clipboardString = glfwGetClipboardString(glfwWindow)
                 return clipboardString ?: ""
             }
         })
+    }
 
-        // Fonts
-        val fontAtlas = ImGui.getIO().fonts
+    private fun setupFonts(io: ImGuiIO) {
+        val fontAtlas = io.fonts
         val fontConfig = ImFontConfig()
 
         fontConfig.glyphRanges = fontAtlas.glyphRangesDefault
@@ -142,35 +123,70 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
         fontAtlas.addFontFromFileTTF("assets/fonts/Roboto-Medium.ttf", 24f, fontConfig)
 
         fontConfig.destroy()
-
-        // Menu
-        menuBar = MenuBar()
     }
 
     fun imGui(dt: Float, currentScene: Scene) {
+        startFrame()
+
         setupDockSpace()
         currentScene.imgui()
         gameViewWindow.imgui()
         propertiesWindow.update(dt, currentScene)
         propertiesWindow.imgui()
-        menuBar.imgui()
-        ImGui.end()
+        hierarchyWindow.imgui()
+
+        endFrame()
+    }
+
+    private fun startFrame() {
+        imGuiGlfw.newFrame()
+        ImGui.newFrame()
+    }
+
+    private fun endFrame() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0)
+        glViewport(0, 0, Window.getWidth(), Window.getHeight())
+        glClearColor(0f, 0f, 0f, 1f)
+        glClear(GL_COLOR_BUFFER_BIT)
+
         ImGui.render()
+        imGuiGl3.renderDrawData(ImGui.getDrawData())
+
+        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            val backupWindowPtr = glfwGetCurrentContext()
+            ImGui.updatePlatformWindows()
+            ImGui.renderPlatformWindowsDefault()
+            glfwMakeContextCurrent(backupWindowPtr)
+        }
+        ImGui.endFrame()
     }
 
     private fun setupDockSpace() {
+        val windowFlags = ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus
+
+        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            val mainViewport = ImGui.getMainViewport()
+            ImGui.setNextWindowPos(mainViewport.workPosX, mainViewport.workPosY)
+            ImGui.setNextWindowSize(mainViewport.workSizeX, mainViewport.workSizeY)
+            ImGui.setNextWindowViewport(mainViewport.id)
+        }
+
         ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.Always)
         ImGui.setNextWindowSize(Window.getWidth().toFloat(), Window.getHeight().toFloat())
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f)
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f)
-        val windowFlags = ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoTitleBar or ImGuiWindowFlags.NoCollapse or
-                ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or
-                ImGuiWindowFlags.NoBringToFrontOnFocus or ImGuiWindowFlags.NoNavFocus
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 1.0f)
 
         ImGui.begin("Dockspace Demo", ImBoolean(true), windowFlags)
         ImGui.popStyleVar(2)
 
         // Dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"))
+        menuBar.imgui()
+        ImGui.end()
+    }
+
+    fun destroy() {
+        imGuiGl3.dispose()
+        imGuiGlfw.dispose()
     }
 }
