@@ -9,6 +9,10 @@ import observers.events.EventType
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.openal.AL
+import org.lwjgl.openal.ALC
+import org.lwjgl.openal.ALC10.*
+import org.lwjgl.openal.ALCCapabilities
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
@@ -31,14 +35,21 @@ object Window : Observer {
     lateinit var frameBuffer: FrameBuffer
     lateinit var pickingTexture: PickingTexture
 
+    // Audio
+    var audioContext: Long = -1L
+    var audioDevice: Long  = -1L
+
     private var runtimePlaying = false
 
-    // TODO: remove
     fun get(): Window = this
 
     fun run() {
         init()
         loop()
+
+        // Destroy audio context
+        alcDestroyContext(audioContext)
+        alcCloseDevice(audioDevice)
 
         // Free memory
         glfwFreeCallbacks(glfwWindow)
@@ -87,6 +98,8 @@ object Window : Observer {
         // Make window visible
         glfwShowWindow(glfwWindow)
 
+        initAudio()
+
         // This is needed for OpenGL
         GL.createCapabilities()
 
@@ -95,6 +108,21 @@ object Window : Observer {
 
         frameBuffer = FrameBuffer(1920, 1080)
         glViewport(0, 0, 1920, 1080)
+    }
+
+    private fun initAudio() {
+        val defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER)
+        audioDevice = alcOpenDevice(defaultDeviceName)
+        audioContext = alcCreateContext(audioDevice, IntArray(1))
+        alcMakeContextCurrent(audioContext)
+
+        val alcCapabilities = ALC.createCapabilities(audioDevice)
+        val alCapabilities = AL.createCapabilities(alcCapabilities)
+
+        if(!alCapabilities.OpenAL10) {
+            assert(false) { "Error: Audio library not supported" }
+        }
+
     }
 
     fun loop() {

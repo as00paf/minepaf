@@ -9,6 +9,7 @@ import marki.Window
 import marki.renderer.Shader
 import marki.renderer.Texture
 import util.AssetPool
+import java.io.File
 
 class LevelEditorSceneInitializer : SceneInitializer() {
 
@@ -47,6 +48,8 @@ class LevelEditorSceneInitializer : SceneInitializer() {
         AssetPool.getSpriteSheet(Texture.BLOCKS_DECOS_SPRITE)?.let { blocksSprites = it }
         AssetPool.getSpriteSheet(Texture.GIZMOS_SPRITE)?.let { gizmosSprites = it }
 
+        loadSounds()
+
         scene.gameObjects.forEach { go ->
             val spriteRenderer = go.getComponent(SpriteRenderer::class.java)
             val texture = spriteRenderer?.getTexture()
@@ -62,6 +65,24 @@ class LevelEditorSceneInitializer : SceneInitializer() {
         }
     }
 
+    private fun loadSounds() {
+        AssetPool.addSound("assets/sounds/main-theme-overworld.ogg", true);
+        AssetPool.addSound("assets/sounds/flagpole.ogg", false);
+        AssetPool.addSound("assets/sounds/break_block.ogg", false);
+        AssetPool.addSound("assets/sounds/bump.ogg", false);
+        AssetPool.addSound("assets/sounds/coin.ogg", false);
+        AssetPool.addSound("assets/sounds/gameover.ogg", false);
+        AssetPool.addSound("assets/sounds/jump-small.ogg", false);
+        AssetPool.addSound("assets/sounds/mario_die.ogg", false);
+        AssetPool.addSound("assets/sounds/pipe.ogg", false);
+        AssetPool.addSound("assets/sounds/powerup.ogg", false);
+        AssetPool.addSound("assets/sounds/powerup_appears.ogg", false);
+        AssetPool.addSound("assets/sounds/stage_clear.ogg", false);
+        AssetPool.addSound("assets/sounds/stomp.ogg", false);
+        AssetPool.addSound("assets/sounds/kick.ogg", false);
+        AssetPool.addSound("assets/sounds/invincible.ogg", false);
+    }
+
     override fun imgui() {
         ImGui.begin("Level Editor Stuff")
         levelEditorStuff.imgui()
@@ -70,63 +91,37 @@ class LevelEditorSceneInitializer : SceneInitializer() {
         ImGui.begin("Objects")
 
         if (ImGui.beginTabBar("WindowTabBar")) {
-            if (ImGui.beginTabItem("Blocks")) {
-                val windowPos = ImVec2()
-                ImGui.getWindowPos(windowPos)
-                val windowSize = ImVec2()
-                ImGui.getWindowSize(windowSize)
-                val itemSpacing = ImVec2()
-                ImGui.getStyle().getItemSpacing(itemSpacing)
+            blocksTab()
+            prefabsTab()
+            soundTab()
 
-                val textureScale = 2
+            ImGui.endTabBar()
+        }
 
-                val windowX2 = windowPos.x + windowSize.x
-                for (i in 0 until blocksSprites.size()) {
-                    val sprite = blocksSprites.getSprite(i)
-                    val spriteWidth = sprite.width * textureScale
-                    val spriteHeight = sprite.height * textureScale
-                    val id = sprite.getTexId()
-                    val texCoords = sprite.getTexCoords()
+        ImGui.end()
 
-                    ImGui.pushID(i)
-                    if (ImGui.imageButton(
-                            id,
-                            spriteWidth,
-                            spriteHeight,
-                            texCoords[2].x,
-                            texCoords[0].y,
-                            texCoords[0].x,
-                            texCoords[2].y
-                        )
-                    ) {
-                        println("Button $i clicked")
-                        val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f)
-                        levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
-                        Window.imGuiLayer.propertiesWindow.activeGameObject = null
-                    }
-                    ImGui.popID()
+    }
 
-                    val lastButtonPos = ImVec2()
-                    ImGui.getItemRectMax(lastButtonPos)
-                    val lastButtonX2 = lastButtonPos.x
-                    val nextButtonX2 = lastButtonX2 + itemSpacing.x + spriteWidth
-                    if (i + 1 < blocksSprites.size() && nextButtonX2 < windowX2) {
-                        ImGui.sameLine()
-                    }
+    private fun blocksTab() {
+        if (ImGui.beginTabItem("Blocks")) {
+            val windowPos = ImVec2()
+            ImGui.getWindowPos(windowPos)
+            val windowSize = ImVec2()
+            ImGui.getWindowSize(windowSize)
+            val itemSpacing = ImVec2()
+            ImGui.getStyle().getItemSpacing(itemSpacing)
 
-                }
-                ImGui.endTabItem()
-            }
+            val textureScale = 2
 
-            if (ImGui.beginTabItem("Prefabs")) {
-                val spriteSheet = AssetPool.getSpriteSheet(Texture.PETER_SPRITE)!!
-                val sprite = spriteSheet.getSprite(0)
-                val scale = 1
-                val spriteWidth = sprite.width * scale
-                val spriteHeight = sprite.height * scale
+            val windowX2 = windowPos.x + windowSize.x
+            for (i in 0 until blocksSprites.size()) {
+                val sprite = blocksSprites.getSprite(i)
+                val spriteWidth = sprite.width * textureScale
+                val spriteHeight = sprite.height * textureScale
                 val id = sprite.getTexId()
                 val texCoords = sprite.getTexCoords()
 
+                ImGui.pushID(i)
                 if (ImGui.imageButton(
                         id,
                         spriteWidth,
@@ -137,19 +132,70 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                         texCoords[2].y
                     )
                 ) {
-                    val block = Prefabs.generatePeter()
+                    println("Button $i clicked")
+                    val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f)
                     levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
                     Window.imGuiLayer.propertiesWindow.activeGameObject = null
                 }
-                ImGui.sameLine()
+                ImGui.popID()
 
-                ImGui.endTabItem()
+                val lastButtonPos = ImVec2()
+                ImGui.getItemRectMax(lastButtonPos)
+                val lastButtonX2 = lastButtonPos.x
+                val nextButtonX2 = lastButtonX2 + itemSpacing.x + spriteWidth
+                if (i + 1 < blocksSprites.size() && nextButtonX2 < windowX2) {
+                    ImGui.sameLine()
+                }
+
+            }
+            ImGui.endTabItem()
+        }
+    }
+
+    private fun prefabsTab() {
+        if (ImGui.beginTabItem("Prefabs")) {
+            val spriteSheet = AssetPool.getSpriteSheet(Texture.PETER_SPRITE)!!
+            val sprite = spriteSheet.getSprite(0)
+            val scale = 1
+            val spriteWidth = sprite.width * scale
+            val spriteHeight = sprite.height * scale
+            val id = sprite.getTexId()
+            val texCoords = sprite.getTexCoords()
+
+            if (ImGui.imageButton(
+                    id,
+                    spriteWidth,
+                    spriteHeight,
+                    texCoords[2].x,
+                    texCoords[0].y,
+                    texCoords[0].x,
+                    texCoords[2].y
+                )
+            ) {
+                val block = Prefabs.generatePeter()
+                levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
+                Window.imGuiLayer.propertiesWindow.activeGameObject = null
+            }
+            ImGui.sameLine()
+
+            ImGui.endTabItem()
+        }
+    }
+
+    private fun soundTab() {
+        if (ImGui.beginTabItem("Sounds")) {
+            val sounds = AssetPool.getAllSounds()
+            sounds.forEach { sound ->
+                val tmp = File(sound.filePath)
+                if(ImGui.button(tmp.name)) {
+                    if(!sound.isPlaying()) sound.play() else sound.stop()
+                }
+                if(ImGui.getContentRegionAvail().x > 100) {
+                    ImGui.sameLine()
+                }
             }
 
-            ImGui.endTabBar()
+            ImGui.endTabItem()
         }
-
-        ImGui.end()
-
     }
 }

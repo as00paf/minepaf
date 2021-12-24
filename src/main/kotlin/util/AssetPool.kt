@@ -1,5 +1,6 @@
 package util
 
+import components.Sound
 import components.SpriteSheet
 import marki.renderer.Shader
 import marki.renderer.Texture
@@ -10,6 +11,7 @@ object AssetPool {
     private val shaders = mutableMapOf<String, Shader>()
     private val textures = mutableMapOf<String, Texture>()
     private val spriteSheets = mutableMapOf<String, SpriteSheet>()
+    private val sounds = mutableMapOf<String, Sound>()
 
     fun getShader(filePath: String): Shader {
         val file = File(filePath)
@@ -47,4 +49,28 @@ object AssetPool {
         }
         return spriteSheets[file.absolutePath]
     }
+
+    fun addSound(soundFile: String, loops: Boolean):Sound? {
+        val file = File(soundFile)
+        return if(sounds.containsKey(file.absolutePath)) {
+            sounds[file.absolutePath]
+        } else {
+            val sound = Sound(file.absolutePath, loops)
+            sounds[file.absolutePath] = sound
+            sound
+        }
+    }
+
+    fun getSound(soundFile: String):Sound? {
+        val file = File(soundFile)
+        if(sounds.containsKey(file.absolutePath)) {
+            return sounds[file.absolutePath]
+        } else {
+            assert(false) {"Sound file not added $soundFile"}
+        }
+
+        return null
+    }
+
+    fun getAllSounds() = sounds.values
 }
