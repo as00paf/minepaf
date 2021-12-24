@@ -37,7 +37,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
     private val imGuiGl3 = ImGuiImplGl3()
     private val menuBar = MenuBar()
     private val gameViewWindow = GameViewWindow()
-    private val hierarchyWindow = SceneHierarchyWindow()
+    private val hierarchyWindow = SceneHierarchyWindow(propertiesWindow)
 
     fun init(glfwWindow: Long) {
         ImGui.createContext()
@@ -95,7 +95,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
             io.mouseWheelH = io.mouseWheelH + xOffset.toFloat()
             io.mouseWheel = io.mouseWheel + yOffset.toFloat()
 
-            if (gameViewWindow.getWantCaptureMouse()) {
+            if (!io.wantCaptureMouse || gameViewWindow.getWantCaptureMouse()) {
                 MouseListener.mouseScrollCallback(w, xOffset, yOffset)
             }
         }
@@ -158,7 +158,6 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
             ImGui.renderPlatformWindowsDefault()
             glfwMakeContextCurrent(backupWindowPtr)
         }
-        ImGui.endFrame()
     }
 
     private fun setupDockSpace() {

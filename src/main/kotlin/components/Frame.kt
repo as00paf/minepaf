@@ -1,4 +1,4 @@
 package components
 
-class Frame(val sprite: Sprite, val frameTime: Float) {
+class Frame(val sprite: Sprite, var frameTime: Float) {
 }

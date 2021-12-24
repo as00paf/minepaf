@@ -128,7 +128,7 @@ object Window : Observer {
             glClearColor(1f, 1f, 1f, 1f)
             glClear(GL_COLOR_BUFFER_BIT)
 
-            if (dt > 0) {
+            if (dt >= 0) {
                 DebugDraw.draw()
                 Renderer.bindShader(defaultShader)
                 if (runtimePlaying) currentScene.update(dt)
@@ -141,7 +141,7 @@ object Window : Observer {
             renderImGui(dt, currentScene)
 
             glfwSwapBuffers(glfwWindow)
-            MouseListener.endFrame()
+            //MouseListener.endFrame()
 
             endTime = Time.getTime()
             dt = endTime - beginTime

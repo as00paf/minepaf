@@ -2,13 +2,11 @@ package components
 
 import editor.PropertiesWindow
 import marki.*
-import marki.renderer.DebugDraw
 import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.*
-import physics2dtemp.primitives.Collider2D
 
-open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: PropertiesWindow):Component() {
+open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: PropertiesWindow) : Component() {
 
     private val xAxisColor = Vector4f(1f, 0.3f, 0.3f, 1f)
     private val xAxisColorHover = Vector4f(1f, 0f, 0f, 1f)
@@ -19,8 +17,10 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
 
     private val gizmoWidth = 16f / scale
     private val gizmoHeight = 48f / scale
-    private val xAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1, this.javaClass.simpleName + "X")
-    private val yAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1,this.javaClass.simpleName + "Y")
+    private val xAxisObject =
+        Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1, this.javaClass.simpleName + "X")
+    private val yAxisObject =
+        Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1, this.javaClass.simpleName + "Y")
     private var xAxisSprite = xAxisObject.getComponent(SpriteRenderer::class.java)
     private var yAxisSprite = yAxisObject.getComponent(SpriteRenderer::class.java)
     private var xAxisOffset = Vector2f(24f / scale, -6f / scale)
@@ -50,24 +50,24 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     }
 
     override fun update(dt: Float) {
-        if(inUse) setInactive()
+        if (inUse) setInactive()
     }
 
     override fun editorUpdate(dt: Float) {
-        if(!inUse) return
+        if (!inUse) return
         activeGameObject = propertiesWindow.activeGameObject
         val go = activeGameObject
-        if(go != null) {
+        if (go != null) {
             setActive()
 
             // TODO : move this into its own keyEditorBinding component class
-            if(KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW_KEY_D)) {
+            if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW_KEY_D)) {
                 val newObject = go.copy()
                 Window.currentScene.addGameObjectToScene(newObject)
                 newObject.transform.position.add(0.1f, 0.1f)
                 propertiesWindow.activeGameObject = newObject
                 return
-            } else if(KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
+            } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
                 go.destroy()
                 setInactive()
                 propertiesWindow.activeGameObject = null
@@ -80,13 +80,19 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
         val xAxisHot = checkXHoverState()
         val yAxisHot = checkYHoverState()
 
-        if((xAxisHot || xAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        if ((xAxisHot || xAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(
+                GLFW_MOUSE_BUTTON_LEFT
+            )
+        ) {
             xAxisActive = true
             yAxisActive = false
-        } else if((yAxisHot || yAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        } else if ((yAxisHot || yAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(
+                GLFW_MOUSE_BUTTON_LEFT
+            )
+        ) {
             yAxisActive = true
             xAxisActive = false
-        } else if(!MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !MouseListener.isDragging()) {
+        } else if (!MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !MouseListener.isDragging()) {
             xAxisActive = false
             yAxisActive = false
         }
@@ -106,17 +112,18 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
         yAxisSprite?.setColor(yAxisColor)
     }
 
-    fun setInactive(){
+    fun setInactive() {
         activeGameObject = null
         xAxisSprite?.setColor(Vector4f(0f, 0f, 0f, 0f))
         yAxisSprite?.setColor(Vector4f(0f, 0f, 0f, 0f))
     }
 
     private fun checkXHoverState(): Boolean {
-        val mousePos = Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY())
-        if(
+        val mousePos = Vector2f(MouseListener.getWorld())
+
+        if (
             mousePos.x in xAxisObject.transform.position.x - (gizmoHeight / 2f)..xAxisObject.transform.position.x + (gizmoHeight / 2f) &&
-            mousePos.y in xAxisObject.transform.position.y..xAxisObject.transform.position.y + (gizmoWidth)
+            mousePos.y in xAxisObject.transform.position.y - gizmoWidth..xAxisObject.transform.position.y
         ) {
             xAxisSprite?.setColor(xAxisColorHover)
             return true
@@ -127,12 +134,13 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     }
 
     private fun checkYHoverState(): Boolean {
-        val mousePos = Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY())
-        if(
+        val mousePos = Vector2f(MouseListener.getWorld())
+        if (
             mousePos.x <= yAxisObject.transform.position.x + (gizmoWidth / 2f) &&
             mousePos.x >= yAxisObject.transform.position.x - (gizmoWidth / 2f) &&
             mousePos.y <= yAxisObject.transform.position.y + (gizmoHeight / 2f) &&
-            mousePos.y >= yAxisObject.transform.position.y - (gizmoHeight / 2f)) {
+            mousePos.y >= yAxisObject.transform.position.y - (gizmoHeight / 2f)
+        ) {
 
             yAxisSprite?.setColor(yAxisColorHover)
             return true
@@ -142,11 +150,12 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
         return false
     }
 
-    fun isInUse():Boolean = inUse
+    fun isInUse(): Boolean = inUse
     fun setNotInUse() {
         inUse = false
         setInactive()
     }
+
     fun setInUse() {
         inUse = true
     }

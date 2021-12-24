@@ -35,24 +35,20 @@ class GameViewWindow {
 
         ImGui.endMenuBar()
 
+        ImGui.setCursorPos(ImGui.getCursorPosX(), ImGui.getCursorPosY())
         val windowSize = getLargestSizeForViewport()
         val windowPos = getCenteredPositionForViewport(windowSize)
+        ImGui.setCursorPos(windowPos.x, windowPos.y) // this line causes problems
 
-        ImGui.setCursorPos(windowPos.x, windowPos.y)
-
-        val topLeft = ImVec2()
-        ImGui.getCursorScreenPos(topLeft)
-        topLeft.x -= ImGui.getScrollX()
-        topLeft.y -= ImGui.getScrollY()
-        leftX = topLeft.x
-        bottomY = topLeft.y
-        rightX = topLeft.x + windowSize.x
-        topY = topLeft.y + windowSize.y
+        leftX = windowPos.x + 10
+        bottomY = windowPos.y
+        rightX = windowPos.x + windowSize.x + 10
+        topY = windowPos.y + windowSize.y
 
         val texId = Window.frameBuffer.getTextureId()
         ImGui.image(texId, windowSize.x, windowSize.y, 0f, 1f, 1f, 0f)
 
-        MouseListener.setGameViewportPos(Vector2f(topLeft.x, topLeft.y))
+        MouseListener.setGameViewportPos(Vector2f(windowPos.x + 10, windowPos.y))
         MouseListener.setGameViewportSize(Vector2f(windowSize.x, windowSize.y))
 
         ImGui.end()
@@ -61,8 +57,6 @@ class GameViewWindow {
     private fun getLargestSizeForViewport(): ImVec2 {
         val windowSize = ImVec2()
         ImGui.getContentRegionAvail(windowSize)
-        windowSize.x -= ImGui.getScrollX()
-        windowSize.y -= ImGui.getScrollY()
 
         var aspectWidth = windowSize.x
         var aspectHeight = aspectWidth / Window.getTargetAspectRatio()
@@ -78,8 +72,6 @@ class GameViewWindow {
     private fun getCenteredPositionForViewport(aspectSize: ImVec2): ImVec2 {
         val windowSize = ImVec2()
         ImGui.getContentRegionAvail(windowSize)
-        windowSize.x -= ImGui.getScrollX()
-        windowSize.y -= ImGui.getScrollY()
 
         val viewportX = (windowSize.x / 2f) - (aspectSize.x / 2f)
         val viewportY = (windowSize.y / 2f) - (aspectSize.y / 2f)

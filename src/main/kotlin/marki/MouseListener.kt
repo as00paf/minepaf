@@ -12,10 +12,10 @@ object MouseListener {
     private var scrollY: Double = 0.0
     private var xPos: Double = 0.0
     private var yPos: Double = 0.0
-    private var worldX: Double = 0.0
-    private var worldY: Double = 0.0
     private var lastX: Double = 0.0
     private var lastY: Double = 0.0
+    private var worldX: Double = 0.0
+    private var worldY: Double = 0.0
     private var lastWorldX: Double = 0.0
     private var lastWorldY: Double = 0.0
     private var isDragging = false
@@ -26,14 +26,12 @@ object MouseListener {
 
     fun mousePosCallback(window: Long, xpos: Double, ypos: Double) {
         if (mouseButtonsDown > 0) isDragging = true
-        this.lastX = this.xPos
-        this.lastY = this.yPos
-        this.lastWorldX = worldX
-        this.lastWorldY = worldY
+        lastX = xPos
+        lastY = yPos
+        lastWorldX = worldX
+        lastWorldY = worldY
         this.xPos = xpos
         this.yPos = ypos
-        calcOrthoX()
-        calcOrthoY()
     }
 
     fun mouseButtonCallback(window: Long, button: Int, action: Int, mods: Int) {
@@ -57,10 +55,16 @@ object MouseListener {
     fun endFrame() {
         this.scrollX = 0.0
         this.scrollY = 0.0
-        this.lastX = this.xPos
-        this.lastY = this.yPos
         this.lastWorldX = this.worldX
         this.lastWorldY = this.worldY
+    }
+
+    fun getWorldDx(): Float {
+        return (lastWorldX - worldX).toFloat()
+    }
+
+    fun getWorldDy(): Float {
+        return (lastWorldY - worldY).toFloat()
     }
 
     fun setGameViewportPos(pos: Vector2f) {
@@ -71,58 +75,53 @@ object MouseListener {
         gameViewportSize.set(size)
     }
 
-    fun getOrthoX(): Float {
-        return worldX.toFloat()
+    fun getWorldX():Float {
+        return getWorld().x
     }
 
-    fun calcOrthoX() {
+    fun getWorldY():Float {
+        return getWorld().y
+    }
+
+    fun getWorld():Vector2f {
         var currentX = getX() - gameViewportPos.x
-        currentX = currentX / gameViewportSize.x * 2.0f - 1.0f
-        val tmp = Vector4f(currentX, 0f, 0f, 1f)
+        currentX = (currentX / gameViewportSize.x) * 2.0f - 1.0f
+
+        var currentY = getY() - gameViewportPos.y
+        currentY = -((currentY / gameViewportSize.y) * 2.0f - 1.0f)
+        val tmp = Vector4f(currentX, currentY, 0f, 1f)
 
         val camera = Window.currentScene.camera
-        val viewProjection = Matrix4f()
-        camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
-        tmp.mul(viewProjection)
+        val inverseView = Matrix4f(camera.getInverseView())
+        val inverseProjection = Matrix4f(camera.getInverseProjection())
+        tmp.mul(inverseView.mul(inverseProjection))
 
         worldX = tmp.x.toDouble()
-    }
-
-    fun getOrthoY(): Float {
-        return worldY.toFloat()
-    }
-
-    fun calcOrthoY() {
-        var currentY = getY() - gameViewportPos.y
-        currentY = -(currentY / gameViewportSize.y * 2.0f - 1.0f)
-        val tmp = Vector4f(0f, currentY, 0f, 1f)
-
-        val camera = Window.currentScene.camera
-        val viewProjection = Matrix4f()
-        camera.getInverseView().mul(camera.getInverseProjection(), viewProjection)
-        tmp.mul(viewProjection)
-
         worldY = tmp.y.toDouble()
+
+        return Vector2f(tmp.x, tmp.y)
     }
 
     fun getScreenX(): Float {
-        var currentX = getX() - gameViewportPos.x
-        currentX = (currentX / gameViewportSize.x) * 1920
-
-        return currentX
+        return getScreen().x
     }
 
     fun getScreenY(): Float {
+       return getScreen().y
+    }
+
+    fun getScreen():Vector2f {
+        var currentX = getX() - gameViewportPos.x
+        currentX = (currentX / gameViewportSize.x) * 1920
+
         var currentY = getY() - gameViewportPos.y
         currentY = 1080 - ((currentY / gameViewportSize.y) * 1080)
 
-        return currentY
+        return Vector2f(currentX, currentY)
     }
 
     fun getX(): Float = xPos.toFloat()
     fun getY(): Float = yPos.toFloat()
-    fun getWorldDx(): Float = (lastWorldX - worldX).toFloat()
-    fun getWorldDy(): Float = (lastWorldY - worldY).toFloat()
     fun getScrollX(): Float = scrollX.toFloat()
     fun getScrollY(): Float = scrollY.toFloat()
     fun isDragging() = isDragging

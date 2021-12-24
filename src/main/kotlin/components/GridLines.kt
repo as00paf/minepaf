@@ -34,7 +34,7 @@ class GridLines : Component() {
         val height = (projectionSize.y * camera.zoom) + GRID_HEIGHT * 2
         val width = (projectionSize.x * camera.zoom) + GRID_WIDTH * 2
 
-        val maxLines:Int = max(numVtLines, numHzLines).toInt()
+        val maxLines:Int = max(numVtLines, numHzLines)
 
         for (i in 0 until maxLines) {
             val x = firstX + (GRID_WIDTH * i)

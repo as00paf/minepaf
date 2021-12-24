@@ -5,12 +5,12 @@ import imgui.flag.ImGuiTreeNodeFlags
 import marki.GameObject
 import marki.Window
 
-class SceneHierarchyWindow {
+class SceneHierarchyWindow(private val propertiesWindow:PropertiesWindow) {
 
     private val payloadDragDropType = "SceneHierarchy"
 
     fun imgui() {
-        ImGui.begin("Scene Hierachy")
+        ImGui.begin("Scene Hierarchy")
 
         val gameObjects = Window.currentScene.gameObjects.filter { it.doSerialization() }
 
@@ -31,6 +31,7 @@ class SceneHierarchyWindow {
 
         val flags = ImGuiTreeNodeFlags.FramePadding or ImGuiTreeNodeFlags.OpenOnArrow or ImGuiTreeNodeFlags.SpanAvailWidth or ImGuiTreeNodeFlags.DefaultOpen
         val result = ImGui.treeNodeEx(obj.name + index.toString(), flags, obj.name)
+        if(ImGui.isItemClicked()) propertiesWindow.activeGameObject = obj
         ImGui.popID()
 
         if(ImGui.beginDragDropSource()) {

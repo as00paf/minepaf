@@ -21,20 +21,19 @@ class PropertiesWindow(private val pickingTexture: PickingTexture) {
     fun update(dt: Float, currentScene: Scene) {
         debounce -= dt
 
-        if(MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
+        if(!MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             val x = MouseListener.getScreenX().toInt()
             val y = MouseListener.getScreenY().toInt()
 
             val goId = pickingTexture.readPixel(x, y)
-            val pickedObject = currentScene.getGameObject(goId + 1)
-            if(pickedObject != null && pickedObject.getComponent(NonPickable::class.java) == null)
-                activeGameObject = pickedObject
-            else if(pickedObject == null && MouseListener.isDragging().not()) {
-                println("Stop dragging")
+            val selectedObject = currentScene.getGameObject(goId)
+            val isSelectable = selectedObject?.getComponent(NonPickable::class.java) == null
+            if(selectedObject != null && isSelectable)
+                activeGameObject = selectedObject
+            else if(selectedObject == null && MouseListener.isDragging().not()) {
                 activeGameObject = null
             }
             debounce = DEFAULT_DEBOUNCE
-            //println("Pixel: ${pickingTexture.readPixel(x, y)}")
         }
     }
 

@@ -33,8 +33,8 @@ class SpriteRenderer(
         }
 
         if(lastTransform.rotation != gameObject.transform.rotation) {
-            //println("will update")
-            //isDirty = true
+            gameObject.transform.copy(lastTransform)
+            isDirty = true
         }
     }
 
@@ -60,6 +60,14 @@ class SpriteRenderer(
     }
 
     fun setColor(color: Vector4f) {
+        if(this.color != color) {
+            this.color.set(color)
+            isDirty = true
+        }
+    }
+
+    fun setColor(x:Float, y:Float, z: Float, w: Float) {
+        val color = Vector4f(x, y, z, w)
         if(this.color != color) {
             this.color.set(color)
             isDirty = true

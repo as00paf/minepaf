@@ -5,6 +5,7 @@ import imgui.ImGui
 import imgui.ImVec2
 import marki.GameObject
 import marki.Prefabs
+import marki.Window
 import marki.renderer.Shader
 import marki.renderer.Texture
 import util.AssetPool
@@ -54,6 +55,11 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                 spriteRenderer.setTexture(AssetPool.getTexture(path))
             }
         }
+
+        scene.gameObjects.forEach { go ->
+            val stateMachine = go.getComponent(StateMachine::class.java)
+            stateMachine?.refreshTextures()
+        }
     }
 
     override fun imgui() {
@@ -61,49 +67,86 @@ class LevelEditorSceneInitializer : SceneInitializer() {
         levelEditorStuff.imgui()
         ImGui.end()
 
-        ImGui.begin("Blocks")
+        ImGui.begin("Objects")
 
-        val windowPos = ImVec2()
-        ImGui.getWindowPos(windowPos)
-        val windowSize = ImVec2()
-        ImGui.getWindowSize(windowSize)
-        val itemSpacing = ImVec2()
-        ImGui.getStyle().getItemSpacing(itemSpacing)
+        if (ImGui.beginTabBar("WindowTabBar")) {
+            if (ImGui.beginTabItem("Blocks")) {
+                val windowPos = ImVec2()
+                ImGui.getWindowPos(windowPos)
+                val windowSize = ImVec2()
+                ImGui.getWindowSize(windowSize)
+                val itemSpacing = ImVec2()
+                ImGui.getStyle().getItemSpacing(itemSpacing)
 
-        val textureScale = 2
+                val textureScale = 2
 
-        val windowX2 = windowPos.x + windowSize.x
-        for (i in 0 until blocksSprites.size()) {
-            val sprite = blocksSprites.getSprite(i)
-            val spriteWidth = sprite.width * textureScale
-            val spriteHeight = sprite.height * textureScale
-            val id = sprite.getTexId()
-            val texCoords = sprite.getTexCoords()
+                val windowX2 = windowPos.x + windowSize.x
+                for (i in 0 until blocksSprites.size()) {
+                    val sprite = blocksSprites.getSprite(i)
+                    val spriteWidth = sprite.width * textureScale
+                    val spriteHeight = sprite.height * textureScale
+                    val id = sprite.getTexId()
+                    val texCoords = sprite.getTexCoords()
 
-            ImGui.pushID(i)
-            if (ImGui.imageButton(
-                    id,
-                    spriteWidth,
-                    spriteHeight,
-                    texCoords[2].x,
-                    texCoords[0].y,
-                    texCoords[0].x,
-                    texCoords[2].y
-                )
-            ) {
-                println("Button $i clicked")
-                val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f)
-                levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
+                    ImGui.pushID(i)
+                    if (ImGui.imageButton(
+                            id,
+                            spriteWidth,
+                            spriteHeight,
+                            texCoords[2].x,
+                            texCoords[0].y,
+                            texCoords[0].x,
+                            texCoords[2].y
+                        )
+                    ) {
+                        println("Button $i clicked")
+                        val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f)
+                        levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
+                        Window.imGuiLayer.propertiesWindow.activeGameObject = null
+                    }
+                    ImGui.popID()
+
+                    val lastButtonPos = ImVec2()
+                    ImGui.getItemRectMax(lastButtonPos)
+                    val lastButtonX2 = lastButtonPos.x
+                    val nextButtonX2 = lastButtonX2 + itemSpacing.x + spriteWidth
+                    if (i + 1 < blocksSprites.size() && nextButtonX2 < windowX2) {
+                        ImGui.sameLine()
+                    }
+
+                }
+                ImGui.endTabItem()
             }
-            ImGui.popID()
 
-            val lastButtonPos = ImVec2()
-            ImGui.getItemRectMax(lastButtonPos)
-            val lastButtonX2 = lastButtonPos.x
-            val nextButtonX2 = lastButtonX2 + itemSpacing.x + spriteWidth
-            if (i + 1 < blocksSprites.size() && nextButtonX2 < windowX2) {
+            if (ImGui.beginTabItem("Prefabs")) {
+                val spriteSheet = AssetPool.getSpriteSheet(Texture.PETER_SPRITE)!!
+                val sprite = spriteSheet.getSprite(0)
+                val scale = 1
+                val spriteWidth = sprite.width * scale
+                val spriteHeight = sprite.height * scale
+                val id = sprite.getTexId()
+                val texCoords = sprite.getTexCoords()
+
+                if (ImGui.imageButton(
+                        id,
+                        spriteWidth,
+                        spriteHeight,
+                        texCoords[2].x,
+                        texCoords[0].y,
+                        texCoords[0].x,
+                        texCoords[2].y
+                    )
+                ) {
+                    val block = Prefabs.generatePeter()
+                    levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
+                    Window.imGuiLayer.propertiesWindow.activeGameObject = null
+                }
                 ImGui.sameLine()
+
+                ImGui.endTabItem()
             }
+
+            ImGui.endTabBar()
         }
 
         ImGui.end()
