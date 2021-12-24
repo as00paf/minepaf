@@ -9,6 +9,8 @@ import observers.EventSystem
 import observers.events.Event
 import observers.events.EventType
 import org.joml.Vector2f
+import java.lang.Math.round
+import kotlin.math.roundToInt
 
 class GameViewWindow {
 
@@ -17,6 +19,7 @@ class GameViewWindow {
     private var topY = 0f
     private var bottomY = 0f
     private var isPlaying = false
+    private var created = false
 
     fun imgui() {
         ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar or ImGuiWindowFlags.NoScrollWithMouse or ImGuiWindowFlags.MenuBar)
@@ -33,6 +36,14 @@ class GameViewWindow {
             EventSystem.notify(EventType.GameEngineStopPlay)
         }
 
+        if(created) {
+            ImGui.text("Mouse Screen (${MouseListener.getScreenX().roundToInt()},${MouseListener.getScreenY().roundToInt()})")
+            ImGui.sameLine()
+            ImGui.text("World Screen (${MouseListener.getWorldX().roundToInt()},${MouseListener.getWorldY().roundToInt()})")
+            ImGui.sameLine()
+            ImGui.text("ImGui (${ImGui.getCursorPosX().roundToInt()},${ImGui.getCursorPosY().roundToInt()})")
+        }
+
         ImGui.endMenuBar()
 
         ImGui.setCursorPos(ImGui.getCursorPosX(), ImGui.getCursorPosY())
@@ -40,18 +51,20 @@ class GameViewWindow {
         val windowPos = getCenteredPositionForViewport(windowSize)
         ImGui.setCursorPos(windowPos.x, windowPos.y) // this line causes problems
 
-        leftX = windowPos.x + 10
+        val offset = 10
+        leftX = windowPos.x + offset
+        rightX = windowPos.x + windowSize.x + offset
         bottomY = windowPos.y
-        rightX = windowPos.x + windowSize.x + 10
         topY = windowPos.y + windowSize.y
 
         val texId = Window.frameBuffer.getTextureId()
         ImGui.image(texId, windowSize.x, windowSize.y, 0f, 1f, 1f, 0f)
 
-        MouseListener.setGameViewportPos(Vector2f(windowPos.x + 10, windowPos.y))
+        MouseListener.setGameViewportPos(Vector2f(windowPos.x + offset, windowPos.y))
         MouseListener.setGameViewportSize(Vector2f(windowSize.x, windowSize.y))
 
         ImGui.end()
+        if(!created) created = true
     }
 
     private fun getLargestSizeForViewport(): ImVec2 {

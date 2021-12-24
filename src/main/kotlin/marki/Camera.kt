@@ -30,7 +30,7 @@ class Camera(var position: Vector2f = Vector2f()) {
         val cameraUp = Vector3f(0.0f, 1.0f, 0.0f)
         viewMatrix.identity()
         viewMatrix.lookAt(
-            Vector3f(position.x, position.y, 20.0f),
+            Vector3f(position.x, position.y, 0.0f),
             cameraFront.add(position.x, position.y, 0.0f),
             cameraUp
         )

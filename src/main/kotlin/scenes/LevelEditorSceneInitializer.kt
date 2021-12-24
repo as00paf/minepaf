@@ -23,6 +23,7 @@ class LevelEditorSceneInitializer : SceneInitializer() {
         levelEditorStuff = scene.createGameObject("LevelEditor")
             .setNoSerialize()
             .addComponent(MouseControls())
+            .addComponent(KeyControls())
             .addComponent(GridLines())
             .addComponent(EditorCamera(scene.camera))
             .addComponent(GizmoSystem(gizmosSprites))
@@ -133,9 +134,9 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                     )
                 ) {
                     println("Button $i clicked")
-                    val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f)
+                    Window.imGuiLayer.propertiesWindow.clearSelected()
+                    val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f, 0)
                     levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
-                    Window.imGuiLayer.propertiesWindow.activeGameObject = null
                 }
                 ImGui.popID()
 
@@ -172,9 +173,9 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                     texCoords[2].y
                 )
             ) {
+                Window.imGuiLayer.propertiesWindow.clearSelected()
                 val block = Prefabs.generatePeter()
                 levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
-                Window.imGuiLayer.propertiesWindow.activeGameObject = null
             }
             ImGui.sameLine()
 
@@ -190,7 +191,8 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                 if(ImGui.button(tmp.name)) {
                     if(!sound.isPlaying()) sound.play() else sound.stop()
                 }
-                if(ImGui.getContentRegionAvail().x > 100) {
+                val space = ImGui.getContentRegionAvailX()
+                if(space > 100) {
                     ImGui.sameLine()
                 }
             }

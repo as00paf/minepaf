@@ -11,11 +11,11 @@ import kotlin.math.max
 
 class GridLines : Component() {
 
-    val camera = Window.currentScene.camera
+    private val camera = Window.currentScene.camera
     var cameraPos = camera.position
     var projectionSize = camera.getProjectionSize()
 
-    val defaultColor = Vector3f(0.02f, 0.02f, 0.02f)
+    private val defaultColor = Vector3f(0.02f, 0.02f, 0.02f)
 
     override fun editorUpdate(dt: Float) {
       drawLines()
@@ -31,10 +31,10 @@ class GridLines : Component() {
         val numVtLines = (projectionSize.x * camera.zoom / GRID_WIDTH).toInt() + 2
         val numHzLines = (projectionSize.y * camera.zoom  / GRID_HEIGHT).toInt() + 2
 
-        val height = (projectionSize.y * camera.zoom) + GRID_HEIGHT * 2
         val width = (projectionSize.x * camera.zoom) + GRID_WIDTH * 2
+        val height = (projectionSize.y * camera.zoom) + GRID_HEIGHT * 2
 
-        val maxLines:Int = max(numVtLines, numHzLines)
+        val maxLines = max(numVtLines, numHzLines)
 
         for (i in 0 until maxLines) {
             val x = firstX + (GRID_WIDTH * i)

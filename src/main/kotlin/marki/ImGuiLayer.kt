@@ -7,37 +7,32 @@ import editor.SceneHierarchyWindow
 import imgui.ImFontConfig
 import imgui.ImGui
 import imgui.ImGuiIO
-import imgui.ImGuiViewport
 import imgui.callback.ImStrConsumer
 import imgui.callback.ImStrSupplier
-import imgui.flag.*
-import org.lwjgl.glfw.GLFW
-import scenes.Scene
-import imgui.type.ImBoolean
-
-import imgui.flag.ImGuiWindowFlags
-
-import imgui.flag.ImGuiStyleVar
-
 import imgui.flag.ImGuiCond
+import imgui.flag.ImGuiConfigFlags
+import imgui.flag.ImGuiStyleVar
+import imgui.flag.ImGuiWindowFlags
 import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
+import imgui.type.ImBoolean
 import marki.renderer.PickingTexture
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL30.*
+import scenes.Scene
 
 
 const val glslVersion = "#version 130"
 
-class ImGuiLayer(private val pickingTexture: PickingTexture) {
+class ImGuiLayer(val pickingTexture: PickingTexture) {
 
     val propertiesWindow = PropertiesWindow(pickingTexture)
+    val gameViewWindow = GameViewWindow()
+    val hierarchyWindow = SceneHierarchyWindow(propertiesWindow)
 
     private val imGuiGlfw = ImGuiImplGlfw()
     private val imGuiGl3 = ImGuiImplGl3()
     private val menuBar = MenuBar()
-    private val gameViewWindow = GameViewWindow()
-    private val hierarchyWindow = SceneHierarchyWindow(propertiesWindow)
 
     fun init(glfwWindow: Long) {
         ImGui.createContext()
@@ -67,7 +62,7 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
             io.keyAlt = io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT)
             io.keySuper = io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER)
 
-            if(!io.wantCaptureKeyboard) {
+            if (!io.wantCaptureKeyboard) {
                 KeyListener.keyCallback(w, key, scancode, action, mods)
             }
         }
@@ -97,7 +92,14 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
 
             if (!io.wantCaptureMouse || gameViewWindow.getWantCaptureMouse()) {
                 MouseListener.mouseScrollCallback(w, xOffset, yOffset)
+            } else {
+                MouseListener.clear()
             }
+        }
+
+        glfwSetWindowSizeCallback(glfwWindow) { w: Long, newWidth: Int, newHeight: Int ->
+            Window.setWidth(newWidth)
+            Window.setHeight(newHeight)
         }
 
         io.setSetClipboardTextFn(object : ImStrConsumer() {
@@ -131,7 +133,6 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
         setupDockSpace()
         currentScene.imgui()
         gameViewWindow.imgui()
-        propertiesWindow.update(dt, currentScene)
         propertiesWindow.imgui()
         hierarchyWindow.imgui()
 
@@ -161,7 +162,8 @@ class ImGuiLayer(private val pickingTexture: PickingTexture) {
     }
 
     private fun setupDockSpace() {
-        val windowFlags = ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus
+        val windowFlags =
+            ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus
 
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             val mainViewport = ImGui.getMainViewport()

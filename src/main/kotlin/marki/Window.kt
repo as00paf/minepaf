@@ -24,8 +24,8 @@ import util.Time
 
 
 object Window : Observer {
-    private val width: Int = 1920
-    private val height: Int = 1080
+    private var width: Int = 1920
+    private var height: Int = 1080
     private val title = "MinePaf"
 
     private var glfwWindow: Long = -1L
@@ -157,19 +157,20 @@ object Window : Observer {
             glClear(GL_COLOR_BUFFER_BIT)
 
             if (dt >= 0) {
-                DebugDraw.draw()
                 Renderer.bindShader(defaultShader)
                 if (runtimePlaying) currentScene.update(dt)
                 else currentScene.editorUpdate(dt)
 
                 currentScene.render()
+                DebugDraw.draw()
             }
-            frameBuffer.unbind()
 
+            frameBuffer.unbind()
             renderImGui(dt, currentScene)
 
+            MouseListener.endFrame()
+
             glfwSwapBuffers(glfwWindow)
-            //MouseListener.endFrame()
 
             endTime = Time.getTime()
             dt = endTime - beginTime
@@ -184,7 +185,7 @@ object Window : Observer {
     private fun changeScene(initializer: SceneInitializer, isFirstScene: Boolean = false) {
         if (!isFirstScene) currentScene.destroy()
 
-        imGuiLayer.propertiesWindow.activeGameObject = null
+        imGuiLayer.propertiesWindow.clearSelected()
 
         val scene = Scene(initializer)
         currentScene = scene
@@ -210,8 +211,8 @@ object Window : Observer {
         }
     }
 
-    fun getWidth() = width
-    fun getHeight() = height
+    fun getWidth() = 1920//width
+    fun getHeight() = 1080//height
     fun getTargetAspectRatio() = 16f / 9f
 
     fun destroy() {
@@ -220,5 +221,13 @@ object Window : Observer {
         glfwFreeCallbacks(glfwWindow)
         glfwDestroyWindow(glfwWindow)
         glfwTerminate()
+    }
+
+    fun setWidth(newWidth: Int) {
+        width = newWidth
+    }
+
+    fun setHeight(newHeight: Int) {
+        height = newHeight
     }
 }

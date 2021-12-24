@@ -1,5 +1,6 @@
 package marki.renderer
 
+import org.joml.Vector2i
 import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL30.*
 
@@ -74,5 +75,17 @@ class PickingTexture(private var width: Int, private var height: Int) {
         glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, pixels)
 
         return pixels[0].toInt() - 1
+    }
+
+    fun readPixels(start:Vector2i, end:Vector2i): FloatArray {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo)
+        glReadBuffer(GL_COLOR_ATTACHMENT0)
+
+        val size = Vector2i(end).sub(start).absolute()
+        val numPixels = size.x * size.y
+        val pixels = FloatArray(3 * numPixels)
+        glReadPixels(start.x, start.y, size.x, size.y, GL_RGB, GL_FLOAT, pixels)
+
+        return pixels.map { it.minus(1) }.toFloatArray()
     }
 }

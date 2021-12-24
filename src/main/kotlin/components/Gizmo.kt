@@ -1,10 +1,13 @@
 package components
 
 import editor.PropertiesWindow
-import marki.*
+import marki.GameObject
+import marki.MouseListener
+import marki.Prefabs
+import marki.Window
 import org.joml.Vector2f
 import org.joml.Vector4f
-import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT
 
 open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: PropertiesWindow) : Component() {
 
@@ -55,23 +58,10 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
 
     override fun editorUpdate(dt: Float) {
         if (!inUse) return
-        activeGameObject = propertiesWindow.activeGameObject
+        activeGameObject = propertiesWindow.getActiveObject()
         val go = activeGameObject
         if (go != null) {
             setActive()
-
-            // TODO : move this into its own keyEditorBinding component class
-            if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW_KEY_D)) {
-                val newObject = go.copy()
-                Window.currentScene.addGameObjectToScene(newObject)
-                newObject.transform.position.add(0.1f, 0.1f)
-                propertiesWindow.activeGameObject = newObject
-                return
-            } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
-                go.destroy()
-                setInactive()
-                propertiesWindow.activeGameObject = null
-            }
         } else {
             setInactive()
             return

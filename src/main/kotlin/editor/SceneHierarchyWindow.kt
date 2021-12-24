@@ -31,7 +31,7 @@ class SceneHierarchyWindow(private val propertiesWindow:PropertiesWindow) {
 
         val flags = ImGuiTreeNodeFlags.FramePadding or ImGuiTreeNodeFlags.OpenOnArrow or ImGuiTreeNodeFlags.SpanAvailWidth or ImGuiTreeNodeFlags.DefaultOpen
         val result = ImGui.treeNodeEx(obj.name + index.toString(), flags, obj.name)
-        if(ImGui.isItemClicked()) propertiesWindow.activeGameObject = obj
+        if(ImGui.isItemClicked()) propertiesWindow.setActiveObject(obj)
         ImGui.popID()
 
         if(ImGui.beginDragDropSource()) {
