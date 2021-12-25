@@ -146,9 +146,9 @@ object MouseListener {
 
     fun getScreen():Vector2f {
         var currentX: Float = getX() - gameViewportPos.x
-        currentX = (currentX / gameViewportSize.x) * 1920
+        currentX = (currentX / gameViewportSize.x) * 1920f
         var currentY: Float = getY() - gameViewportPos.y
-        currentY = (1.0f - (currentY / gameViewportSize.y)) * 1080
+        currentY = (1.0f - (currentY / gameViewportSize.y)) * 1080f
         return Vector2f(currentX, currentY)
     }
 

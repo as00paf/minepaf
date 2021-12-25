@@ -86,8 +86,8 @@ class GameViewWindow {
         val windowSize = ImVec2()
         ImGui.getContentRegionAvail(windowSize)
 
-        val viewportX = (windowSize.x / 2f) - (aspectSize.x / 2f)
-        val viewportY = (windowSize.y / 2f) - (aspectSize.y / 2f)
+        val viewportX = (windowSize.x / 2.0f) - (aspectSize.x / 2.0f)
+        val viewportY = (windowSize.y / 2.0f) - (aspectSize.y / 2.0f)
 
         return ImVec2(viewportX + ImGui.getCursorPosX(), viewportY + ImGui.getCursorPosY())
     }

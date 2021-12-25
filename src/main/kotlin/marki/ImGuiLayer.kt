@@ -163,7 +163,8 @@ class ImGuiLayer(val pickingTexture: PickingTexture) {
 
     private fun setupDockSpace() {
         val windowFlags =
-            ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus
+            ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus or
+            ImGuiWindowFlags.NoCollapse or ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or ImGuiWindowFlags.NoNavFocus
 
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             val mainViewport = ImGui.getMainViewport()

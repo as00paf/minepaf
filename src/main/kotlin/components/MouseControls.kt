@@ -47,8 +47,8 @@ class MouseControls : Component() {
         println("y: $y")
 
         if (position != null) {
-            position.x = (floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) + Settings.GRID_WIDTH / 2
-            position.y = (floor(y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) + Settings.GRID_HEIGHT / 2
+            position.x = (floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) + Settings.GRID_WIDTH / 2f
+            position.y = (floor(y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) + Settings.GRID_HEIGHT / 2f
 
             if (MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
                 place()
@@ -62,7 +62,7 @@ class MouseControls : Component() {
         } else if (!MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             val goId = pickingTexture.readPixel(x.toInt(), y.toInt())
             val selectedObject = scene.getGameObject(goId)
-            println("selected id = ${goId + 1}")
+            println("selected id = ${goId}")
             val isSelectable = selectedObject?.getComponent(NonPickable::class.java) == null
             if (selectedObject != null && isSelectable) {
                 Window.imGuiLayer.propertiesWindow.setActiveObject(selectedObject)

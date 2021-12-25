@@ -54,9 +54,7 @@ class PropertiesWindow(val pickingTexture: PickingTexture) {
 
     fun getActiveObject() = if (activeGameObjects.size == 1) activeGameObjects[0] else null
     fun setActiveObject(go: GameObject) {
-        go?.let {
-            clearSelected()
-            activeGameObjects.add(go)
-        }
+        clearSelected()
+        activeGameObjects.add(go)
     }
 }

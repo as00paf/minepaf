@@ -62,7 +62,6 @@ object Window : Observer {
 
     private fun init() {
         initWindow()
-        pickingTexture = PickingTexture(1920, 1080)
         imGuiLayer = ImGuiLayer(pickingTexture)
         imGuiLayer.init(glfwWindow)
 
@@ -107,6 +106,7 @@ object Window : Observer {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
 
         frameBuffer = FrameBuffer(1920, 1080)
+        pickingTexture = PickingTexture(1920, 1080)
         glViewport(0, 0, 1920, 1080)
     }
 
