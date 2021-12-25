@@ -44,7 +44,7 @@ class MouseControls : Component() {
         val x = MouseListener.getWorldX()
         val y = MouseListener.getWorldY()
 
-        println("y: $y")
+        //println("y: $y")
 
         if (position != null) {
             position.x = (floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) + Settings.GRID_WIDTH / 2f

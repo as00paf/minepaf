@@ -121,6 +121,37 @@ dependencies {
 
 }
 
+tasks.jar {
+    manifest {
+        attributes (
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'MainKt'
+        )
+    }
+    from {
+        configurations.compileClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
+    classifier = 'all'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+artifacts {
+    archives fatJar
+}
+
 test {
     useJUnitPlatform()
 }

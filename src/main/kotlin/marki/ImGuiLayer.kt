@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL30.*
 import scenes.Scene
 
 
-const val glslVersion = "#version 130"
+const val glslVersion = "#version 330"
 
 class ImGuiLayer(val pickingTexture: PickingTexture) {
 
@@ -46,7 +46,7 @@ class ImGuiLayer(val pickingTexture: PickingTexture) {
         setCallbacks(glfwWindow, io)
         setupFonts(io)
 
-        imGuiGlfw.init(glfwWindow, true)
+        imGuiGlfw.init(glfwWindow, false)
         imGuiGl3.init(glslVersion)
     }
 

@@ -1,8 +1,8 @@
 package marki.renderer
 
 import org.joml.Vector2i
-import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 
 class PickingTexture(private var width: Int, private var height: Int) {
 
@@ -40,8 +40,10 @@ class PickingTexture(private var width: Int, private var height: Int) {
         glEnable(GL_TEXTURE_2D)
         depthTexture = glGenTextures()
         glBindTexture(GL_TEXTURE_2D, depthTexture)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0)
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0,
+            GL_DEPTH_COMPONENT, GL_FLOAT, 0)
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+            GL_TEXTURE_2D, depthTexture, 0)
 
         // Disable the reading
         glReadBuffer(GL_NONE)
@@ -53,7 +55,7 @@ class PickingTexture(private var width: Int, private var height: Int) {
         }
 
         // Unbind the texture and framebuffer
-        glBindTexture(GL_FRAMEBUFFER, 0)
+        glBindTexture(GL_TEXTURE_2D, 0)
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
         return true

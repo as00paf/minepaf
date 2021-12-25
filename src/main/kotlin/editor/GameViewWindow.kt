@@ -37,9 +37,9 @@ class GameViewWindow {
         }
 
         if(created) {
-            ImGui.text("Mouse Screen (${MouseListener.getScreenX().roundToInt()},${MouseListener.getScreenY().roundToInt()})")
+            ImGui.text("Screen (${MouseListener.getScreenX().roundToInt()},${MouseListener.getScreenY().roundToInt()})")
             ImGui.sameLine()
-            ImGui.text("World Screen (${MouseListener.getWorldX().roundToInt()},${MouseListener.getWorldY().roundToInt()})")
+            ImGui.text("World (${MouseListener.getWorldX().roundToInt()},${MouseListener.getWorldY().roundToInt()})")
             ImGui.sameLine()
             ImGui.text("ImGui (${ImGui.getCursorPosX().roundToInt()},${ImGui.getCursorPosY().roundToInt()})")
         }

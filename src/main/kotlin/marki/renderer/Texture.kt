@@ -6,10 +6,10 @@ import org.lwjgl.stb.STBImage.*
 
 class Texture {
 
-    @Transient private var id: Int = 0
+    @Transient private var id: Int = -1
 
-    private var width: Int = -1
-    private var height: Int = -1
+    private var width: Int = 0
+    private var height: Int = 0
     private var filePath: String? = null
 
     fun init(width: Int, height: Int):Texture {
@@ -23,7 +23,8 @@ class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+            0, GL_RGB, GL_UNSIGNED_BYTE, 0)
 
         return this
     }

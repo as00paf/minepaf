@@ -1,7 +1,6 @@
 import marki.Window
 
-
-fun main(){
+fun main(args:Array<String>){
     val window = Window.get()
     window.run()
 }
