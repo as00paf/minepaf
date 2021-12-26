@@ -1,8 +1,10 @@
 package marki.renderer
 
 import org.joml.Vector2i
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
+import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER
 
 class PickingTexture(private var width: Int, private var height: Int) {
 
@@ -61,12 +63,15 @@ class PickingTexture(private var width: Int, private var height: Int) {
         return true
     }
 
+    var writing = false
     fun enableWriting() {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo)
+        writing = true
     }
 
     fun disableWriting() {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0)
+        writing = false
     }
 
     fun readPixel(x: Int, y: Int): Int {

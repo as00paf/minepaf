@@ -12,7 +12,6 @@ import kotlin.math.max
 class GridLines : Component() {
 
     private val camera = Window.currentScene.camera
-    var cameraPos = camera.position
     var projectionSize = camera.getProjectionSize()
 
     private val defaultColor = Vector3f(0.02f, 0.02f, 0.02f)
@@ -22,7 +21,7 @@ class GridLines : Component() {
     }
 
     private fun drawLines() {
-        cameraPos = camera.position
+        val cameraPos = camera.position
         projectionSize = camera.getProjectionSize()
 
         val firstX = (floor(cameraPos.x / GRID_WIDTH) - 1) * GRID_HEIGHT

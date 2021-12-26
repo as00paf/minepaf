@@ -83,7 +83,7 @@ object Window : Observer {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0)
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
 
         // Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL)
@@ -143,7 +143,7 @@ object Window : Observer {
             glClearColor(0f, 0f, 0f, 0f)
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-            Renderer.bindShader(pickingShader)
+            currentScene.renderer.bindShader(pickingShader)
             currentScene.render()
 
             pickingTexture.disableWriting()
@@ -157,7 +157,7 @@ object Window : Observer {
             glClear(GL_COLOR_BUFFER_BIT)
 
             if (dt >= 0) {
-                Renderer.bindShader(defaultShader)
+                currentScene.renderer.bindShader(defaultShader)
                 if (runtimePlaying) currentScene.update(dt)
                 else currentScene.editorUpdate(dt)
 

@@ -6,6 +6,8 @@ import marki.Transform
 import marki.renderer.Texture
 import org.joml.Vector2f
 import org.joml.Vector4f
+import util.AssetPool
+import util.AssetPool.getTexture
 
 class SpriteRenderer(
     private var sprite: Sprite = Sprite(null),
@@ -16,6 +18,10 @@ class SpriteRenderer(
     @Transient private var isDirty = true
 
     override fun start() {
+        sprite.getTexture()?.let {
+            sprite.setTexture(getTexture(it.getFilePath().orEmpty()))
+        }
+
         this.lastTransform = gameObject.transform.copy()
     }
 

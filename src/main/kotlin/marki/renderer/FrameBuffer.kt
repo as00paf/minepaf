@@ -21,7 +21,7 @@ class FrameBuffer(private val width: Int, private val height: Int) {
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height)
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboId)
 
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             assert(false) { "Error: Framebuffer is not complete" }
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0)

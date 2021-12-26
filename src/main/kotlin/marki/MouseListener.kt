@@ -28,7 +28,7 @@ object MouseListener {
 
     fun mousePosCallback(window: Long, xpos: Double, ypos: Double) {
         if (!Window.imGuiLayer.gameViewWindow.getWantCaptureMouse()) clear()
-        if (mouseButtonsDown > 0) isDragging = true
+        isDragging = mouseButtonsDown > 0
         this.lastX = this.xPos
         this.lastY = this.yPos
         this.lastWorldX = this.worldX
@@ -99,15 +99,15 @@ object MouseListener {
 
     fun getWorld(): Vector2f {
         var currentX: Float = getX() - gameViewportPos.x
-        currentX = (2.0f * (currentX / gameViewportSize.x)) - 1.0f
+        currentX = 2.0f * (currentX / gameViewportSize.x) - 1.0f
         var currentY: Float = getY() - gameViewportPos.y
-        currentY = (2.0f * (1.0f - (currentY / gameViewportSize.y))) - 1
+        currentY = 2.0f * (1.0f - currentY / gameViewportSize.y) - 1
 
-        val camera = Window.currentScene.camera
+        val camera: Camera = Window.currentScene.camera
         val tmp = Vector4f(currentX, currentY, 0f, 1f)
         val inverseView = Matrix4f(camera.getInverseView())
         val inverseProjection = Matrix4f(camera.getInverseProjection())
-        tmp.set(tmp.mul(inverseView.mul(inverseProjection)))
+        tmp.mul(inverseView.mul(inverseProjection))
 
         return Vector2f(tmp.x, tmp.y)
     }
@@ -146,9 +146,9 @@ object MouseListener {
 
     fun getScreen():Vector2f {
         var currentX: Float = getX() - gameViewportPos.x
-        currentX = (currentX / gameViewportSize.x) * 1920f
+        currentX = currentX / gameViewportSize.x * 1920.0f
         var currentY: Float = getY() - gameViewportPos.y
-        currentY = (1.0f - (currentY / gameViewportSize.y)) * 1080f
+        currentY = (1.0f - currentY / gameViewportSize.y) * 1080.0f
         return Vector2f(currentX, currentY)
     }
 

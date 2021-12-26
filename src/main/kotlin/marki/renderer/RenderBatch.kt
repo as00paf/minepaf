@@ -88,9 +88,14 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int, privat
         while (i < spriteCount) {
             val spr = sprites[i]!!
             if (spr.isDirty()) {
-                loadVertexProperties(i)
-                spr.setClean()
-                rebufferData = true
+                if (!hasTexture(spr.getTexture())) {
+                    renderer.destroyGameObject(spr.gameObject)
+                    renderer.add(spr.gameObject)
+                } else {
+                    loadVertexProperties(i)
+                    spr.setClean()
+                    rebufferData = true
+                }
             }
 
             // TODO: get better solution for this
@@ -108,7 +113,7 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int, privat
         }
 
         // Use shader
-        val shader = Renderer.getBoundShader()
+        val shader = renderer.getBoundShader()
         shader.use()
         shader.uploadMat4f("uProjection", Window.currentScene.camera.getProjectionMatrix())
         shader.uploadMat4f("uView", Window.currentScene.camera.getViewMatrix())
@@ -143,19 +148,9 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int, privat
         var offset = index * 4 * VERTEX_SIZE
         val color = sprite.getColor()
 
-        var texId = sprite.getTexture().let { sprTex ->
+        val texId = sprite.getTexture().let { sprTex ->
             if (textures.contains(sprTex)) textures.indexOf(sprTex) + 1
             else 0
-        }
-
-        val spriteTex = sprite.getTexture()
-        if (spriteTex != null) {
-            for (i in textures.indices) {
-                if (textures[i].equals(spriteTex)) {
-                    texId = i + 1
-                    break
-                }
-            }
         }
 
         val texCoords = sprite.getTextCoords()

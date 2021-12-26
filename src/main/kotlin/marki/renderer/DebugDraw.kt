@@ -81,7 +81,7 @@ object DebugDraw {
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, vboId)
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertexArray.copyOfRange(0, lines.size * 6 * 2))
+        glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_DYNAMIC_DRAW)
 
         shader.use()
         shader.uploadMat4f("uProjection", Window.currentScene.camera.getProjectionMatrix())

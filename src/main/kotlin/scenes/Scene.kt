@@ -8,13 +8,14 @@ import marki.GameObject
 import marki.GameObjectSerializer
 import marki.Transform
 import marki.renderer.Renderer
+import org.joml.Vector2f
 import physics2d.Physics2d
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class Scene(private val initializer: SceneInitializer, val camera: Camera = Camera()) {
+class Scene(private val initializer: SceneInitializer, val camera: Camera = Camera(Vector2f(0f, 0f))) {
 
     val gameObjects = mutableListOf<GameObject>()
     val renderer = Renderer()
@@ -25,6 +26,7 @@ class Scene(private val initializer: SceneInitializer, val camera: Camera = Came
         .setPrettyPrinting()
         .registerTypeAdapter(Component::class.java, ComponentDeserializer())
         .registerTypeAdapter(GameObject::class.java, GameObjectSerializer())
+        .enableComplexMapKeySerialization()
         .create()
 
     fun init() {

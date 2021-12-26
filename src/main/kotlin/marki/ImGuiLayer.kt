@@ -17,7 +17,9 @@ import imgui.gl3.ImGuiImplGl3
 import imgui.glfw.ImGuiImplGlfw
 import imgui.type.ImBoolean
 import marki.renderer.PickingTexture
+import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFWCharCallbackI
 import org.lwjgl.opengl.GL30.*
 import scenes.Scene
 
@@ -64,6 +66,12 @@ class ImGuiLayer(val pickingTexture: PickingTexture) {
 
             if (!io.wantCaptureKeyboard) {
                 KeyListener.keyCallback(w, key, scancode, action, mods)
+            }
+        }
+
+        glfwSetCharCallback(glfwWindow) { w: Long, c: Int ->
+            if (c != GLFW_KEY_DELETE) {
+                io.addInputCharacter(c)
             }
         }
 
@@ -163,8 +171,8 @@ class ImGuiLayer(val pickingTexture: PickingTexture) {
 
     private fun setupDockSpace() {
         val windowFlags =
-            ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus or
-            ImGuiWindowFlags.NoCollapse or ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or ImGuiWindowFlags.NoNavFocus
+            ImGuiWindowFlags.MenuBar or ImGuiWindowFlags.NoDocking or ImGuiWindowFlags.NoBringToFrontOnFocus /*or
+            ImGuiWindowFlags.NoCollapse or ImGuiWindowFlags.NoResize or ImGuiWindowFlags.NoMove or ImGuiWindowFlags.NoNavFocus*/
 
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             val mainViewport = ImGui.getMainViewport()

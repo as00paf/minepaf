@@ -41,16 +41,16 @@ class MouseControls : Component() {
         val pickingTexture = Window.imGuiLayer.propertiesWindow.pickingTexture
         val scene = Window.currentScene
         val position = holdingObject?.transform?.position
-        val x = MouseListener.getWorldX()
-        val y = MouseListener.getWorldY()
 
         //println("y: $y")
 
         if (position != null) {
+            val x = MouseListener.getWorldX()
+            val y = MouseListener.getWorldY()
             position.x = (floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) + Settings.GRID_WIDTH / 2f
             position.y = (floor(y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) + Settings.GRID_HEIGHT / 2f
 
-            if (MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
+            if (MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
                 place()
                 debounce = debounceTime
             }
@@ -60,9 +60,14 @@ class MouseControls : Component() {
                 holdingObject = null
             }
         } else if (!MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
+            val x = MouseListener.getScreenX()
+            val y = MouseListener.getScreenY()
+            DebugDraw.addCircle(Vector2f(MouseListener.getWorldX(), MouseListener.getWorldY() + 0.175f), 0.25f)
             val goId = pickingTexture.readPixel(x.toInt(), y.toInt())
             val selectedObject = scene.getGameObject(goId)
-            println("selected id = ${goId}")
+            println("selected id = $goId")
+            val testId = pickingTexture.readPixel(1000, 337)
+            println("test id = $testId")
             val isSelectable = selectedObject?.getComponent(NonPickable::class.java) == null
             if (selectedObject != null && isSelectable) {
                 Window.imGuiLayer.propertiesWindow.setActiveObject(selectedObject)

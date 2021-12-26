@@ -3,6 +3,7 @@ package marki.renderer
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.stb.STBImage.*
+import java.util.*
 
 class Texture {
 
@@ -16,7 +17,7 @@ class Texture {
         this.id = glGenTextures()
         this.width = width
         this.height = height
-        this.filePath = "Generated"
+        this.filePath = "Generated::$id"
 
         glBindTexture(GL_TEXTURE_2D, id)
 
@@ -88,6 +89,10 @@ class Texture {
                 other.width == width && other.height == height && other.id == id && other.filePath == filePath
             }
         }
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(id, width, height, filePath)
     }
 
     companion object {

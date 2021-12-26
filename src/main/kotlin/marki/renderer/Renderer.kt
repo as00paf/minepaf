@@ -7,6 +7,7 @@ const val MAX_BATCH_SIZE = 1000
 
 class Renderer {
     private val batches = mutableListOf<RenderBatch>()
+    lateinit var currentShader: Shader
 
     fun add(go: GameObject) {
         val spr = go.getComponent(SpriteRenderer::class.java)
@@ -18,7 +19,7 @@ class Renderer {
         batches.forEach { batch ->
             if(batch.hasRoom() && batch.zIndex() == sprite.gameObject.transform.zIndex) {
                 val texture = sprite.getTexture()
-                if(batch.hasTextureRoom() || batch.hasTexture(texture)){
+                if(texture == null || (batch.hasTextureRoom() || batch.hasTexture(texture))){
                     batch.addSprite(sprite)
                     added = true
                 }
@@ -54,15 +55,11 @@ class Renderer {
         deadObjects.forEach { destroyGameObject(it) }
     }
 
-    companion object {
-        lateinit var currentShader: Shader
+    fun getBoundShader():Shader {
+        return currentShader
+    }
 
-        fun getBoundShader():Shader {
-            return currentShader
-        }
-
-        fun bindShader(shader: Shader) {
-            currentShader = shader
-        }
+    fun bindShader(shader: Shader) {
+        currentShader = shader
     }
 }
