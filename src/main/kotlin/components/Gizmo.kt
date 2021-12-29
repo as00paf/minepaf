@@ -21,9 +21,9 @@ open class Gizmo(private val arrowSprite: Sprite, private val propertiesWindow: 
     private val gizmoWidth = 16f / scale
     private val gizmoHeight = 48f / scale
     private val xAxisObject =
-        Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1, this.javaClass.simpleName + "X")
+        Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 0, this.javaClass.simpleName + "X")
     private val yAxisObject =
-        Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 1, this.javaClass.simpleName + "Y")
+        Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight, 0, this.javaClass.simpleName + "Y")
     private var xAxisSprite = xAxisObject.getComponent(SpriteRenderer::class.java)
     private var yAxisSprite = yAxisObject.getComponent(SpriteRenderer::class.java)
     private var xAxisOffset = Vector2f(24f / scale, -6f / scale)

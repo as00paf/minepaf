@@ -207,7 +207,7 @@ class RenderBatch(private var maxBatchSize: Int, private var zIndex: Int, privat
             vertices[offset + 8] = texId.toFloat()
 
             // Load entity id
-            vertices[offset + 9] = sprite.gameObject.getUid().toFloat()
+            vertices[offset + 9] = go.getUid().toFloat() + 1
 
             offset += VERTEX_SIZE
         }

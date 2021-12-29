@@ -2,14 +2,14 @@
   {
     "isDead": false,
     "doSerialization": true,
-    "uId": 0,
+    "uId": 7,
     "components": [
       {
         "type": "marki.Transform",
         "properties": {
           "position": {
-            "x": 3.125,
-            "y": 1.125
+            "x": 3.375,
+            "y": 0.625
           },
           "scale": {
             "x": 0.25,
@@ -17,7 +17,7 @@
           },
           "rotation": 0.0,
           "zIndex": 0,
-          "uId": 19
+          "uId": 20
         }
       },
       {
@@ -56,7 +56,7 @@
             "z": 1.0,
             "w": 1.0
           },
-          "uId": 20
+          "uId": 21
         }
       }
     ],

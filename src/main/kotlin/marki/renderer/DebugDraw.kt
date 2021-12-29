@@ -115,7 +115,7 @@ object DebugDraw {
     }
 
     // Box2D
-    fun addBox2D(center: Vector2f, dimensions: Vector2f, rotation: Double, color: Vector3f = defaultDebugColor, lifetime:Int = 2) {
+    fun addBox2D(center: Vector2f, dimensions: Vector2f, rotation: Double = 0.0, color: Vector3f = defaultDebugColor, lifetime:Int = 2) {
         val min = Vector2f(center).sub(Vector2f(dimensions).mul(0.5f))
         val max = Vector2f(center).add(Vector2f(dimensions).mul(0.5f))
 

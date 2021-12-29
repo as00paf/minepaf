@@ -66,8 +66,6 @@ class MouseControls : Component() {
             val goId = pickingTexture.readPixel(x.toInt(), y.toInt())
             val selectedObject = scene.getGameObject(goId)
             println("selected id = $goId")
-            val testId = pickingTexture.readPixel(1000, 337)
-            println("test id = $testId")
             val isSelectable = selectedObject?.getComponent(NonPickable::class.java) == null
             if (selectedObject != null && isSelectable) {
                 Window.imGuiLayer.propertiesWindow.setActiveObject(selectedObject)
@@ -124,6 +122,8 @@ class MouseControls : Component() {
                     Window.imGuiLayer.propertiesWindow.addActiveGameObject(selectedObject)
                 }
             }
+
+            println("Selected ${gameObjectIds.size} ojects")
         }
     }
 }
