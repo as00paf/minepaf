@@ -50,9 +50,16 @@ class MouseControls : Component() {
             position.x = (floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) + Settings.GRID_WIDTH / 2f
             position.y = (floor(y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) + Settings.GRID_HEIGHT / 2f
 
-            if (MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
-                place()
-                debounce = debounceTime
+            if (MouseListener.isMouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
+                val halfWidth = Settings.GRID_WIDTH / 2f
+                val halfHeight = Settings.GRID_HEIGHT / 2f
+
+                if(MouseListener.isDragging() && !blockInSquare(position.x - halfWidth, position.y - halfHeight)) {
+                    place()
+                }else if (!MouseListener.isDragging() && debounce < 0) {
+                    place()
+                    debounce = debounceTime
+                }
             }
 
             if (KeyListener.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
@@ -81,8 +88,8 @@ class MouseControls : Component() {
             }
 
             boxSelectEnd.set(Vector2f(MouseListener.getScreen()))
-            val boxSelectStartWorld = Vector2f(MouseListener.screenToWorld(boxSelectStart))
-            val boxSelectEndWorld = Vector2f(MouseListener.screenToWorld(boxSelectEnd))
+            val boxSelectStartWorld = MouseListener.screenToWorld(boxSelectStart)
+            val boxSelectEndWorld = MouseListener.screenToWorld(boxSelectEnd)
             val halfSize = (Vector2f(boxSelectEndWorld).sub(boxSelectStartWorld)).mul(0.5f)
 
             DebugDraw.addBox2D(Vector2f(boxSelectStartWorld).add(halfSize), Vector2f(halfSize).mul(2f), 0.0)
@@ -125,5 +132,25 @@ class MouseControls : Component() {
 
             println("Selected ${gameObjectIds.size} ojects")
         }
+    }
+
+    private fun blockInSquare(x: Float, y: Float): Boolean {
+        val propertiesWindow = Window.imGuiLayer.propertiesWindow
+        val start = Vector2f(x, y)
+        val end = Vector2f(start).add(Vector2f(Settings.GRID_WIDTH, Settings.GRID_HEIGHT))
+        val startScreenf = MouseListener.worldToScreen(start)
+        val endScreenf = MouseListener.worldToScreen(end)
+        val startScreen = Vector2i(startScreenf.x.toInt() + 2, startScreenf.y.toInt() + 2)
+        val endScreen = Vector2i(endScreenf.x.toInt() - 2, endScreenf.y.toInt() - 2)
+
+        val gameObjectIds = propertiesWindow.pickingTexture.readPixels(startScreen, endScreen)
+        gameObjectIds.forEach { goId ->
+            val selectedObject = Window.currentScene.getGameObject(goId.toInt())
+            if(selectedObject?.getComponent(NonPickable::class.java) == null) {
+                return true
+            }
+        }
+
+        return false
     }
 }

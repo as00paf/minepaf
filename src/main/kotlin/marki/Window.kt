@@ -16,6 +16,7 @@ import org.lwjgl.openal.ALCCapabilities
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
+import physics2d.Physics2d
 import scenes.LevelEditorSceneInitializer
 import scenes.Scene
 import scenes.SceneInitializer
@@ -42,6 +43,7 @@ object Window : Observer {
     private var runtimePlaying = false
 
     fun get(): Window = this
+    fun getPhysics(): Physics2d = currentScene.physics2d
 
     fun run() {
         init()
@@ -168,6 +170,7 @@ object Window : Observer {
             frameBuffer.unbind()
             renderImGui(dt, currentScene)
 
+            KeyListener.endFrame()
             MouseListener.endFrame()
 
             glfwSwapBuffers(glfwWindow)

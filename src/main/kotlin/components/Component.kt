@@ -4,6 +4,7 @@ import editor.MImGui
 import imgui.internal.ImGui
 import imgui.type.ImInt
 import marki.GameObject
+import org.jbox2d.dynamics.contacts.Contact
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.joml.Vector4f
@@ -30,6 +31,23 @@ abstract class Component {
     open fun start() {}
     open fun update(dt: Float) {}
     open fun editorUpdate(dt: Float) {}
+
+    fun beginCollision(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+
+    }
+
+    fun endCollision(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+
+    }
+
+    fun preSolve(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+
+    }
+
+    fun postSolve(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+
+    }
+
     open fun imgui() {
         try {
             val fields = this.javaClass.declaredFields

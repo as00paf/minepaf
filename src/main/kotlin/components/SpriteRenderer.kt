@@ -50,6 +50,8 @@ class SpriteRenderer(
         }
     }
 
+
+
     fun getColor() = color
     fun getTextCoords(): Array<Vector2f> = sprite.getTexCoords()
     fun isDirty() = isDirty

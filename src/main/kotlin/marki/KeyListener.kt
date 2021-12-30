@@ -21,11 +21,13 @@ object KeyListener {
         }
     }
 
+    fun endFrame() {
+        keyBeginPressed.fill(false)
+    }
+
     fun isKeyPressed(key: Int):Boolean = keyPressed[key]
 
     fun keyBeginPress(key: Int): Boolean {
-        val result = keyBeginPressed[key]
-        if(result) keyBeginPressed[key] = false
-        return result
+        return  keyBeginPressed[key]
     }
 }
