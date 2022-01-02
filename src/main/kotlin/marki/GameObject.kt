@@ -86,6 +86,7 @@ class GameObject(
         val gson = GsonBuilder()
             .registerTypeAdapter(Component::class.java, ComponentDeserializer())
             .registerTypeAdapter(GameObject::class.java, GameObjectSerializer())
+            .enableComplexMapKeySerialization()
             .create()
 
         val objAsJSON = gson.toJson(this)

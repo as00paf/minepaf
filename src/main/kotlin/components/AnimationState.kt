@@ -10,12 +10,14 @@ class AnimationState() {
     @Transient private var currentSprite = 0
     var doesloop = false
 
-    fun addFrame(sprite: Sprite, frameTime: Float) {
+    fun addFrame(sprite: Sprite, frameTime: Float): AnimationState {
         animationFrames.add(Frame(sprite, frameTime))
+        return this
     }
 
-    fun setLoop(loop: Boolean) {
+    fun setLoop(loop: Boolean):AnimationState {
         doesloop = loop
+        return this
     }
 
     fun update(dt: Float) {

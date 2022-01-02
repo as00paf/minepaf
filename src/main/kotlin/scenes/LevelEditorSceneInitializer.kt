@@ -8,6 +8,10 @@ import marki.Prefabs
 import marki.Window
 import marki.renderer.Shader
 import marki.renderer.Texture
+import org.joml.Vector2f
+import physics2d.components.Box2DCollider
+import physics2d.components.RigidBody2D
+import physics2d.enums.BodyType
 import util.AssetPool
 import java.io.File
 
@@ -116,6 +120,7 @@ class LevelEditorSceneInitializer : SceneInitializer() {
 
             val windowX2 = windowPos.x + windowSize.x
             for (i in 0 until blocksSprites.size()) {
+                val addCollider = (i == 3) or (i == 4) or (i == 11) or (i == 12)
                 val sprite = blocksSprites.getSprite(i)
                 val spriteWidth = sprite.width * textureScale
                 val spriteHeight = sprite.height * textureScale
@@ -135,7 +140,17 @@ class LevelEditorSceneInitializer : SceneInitializer() {
                 ) {
                     println("Button $i clicked")
                     Window.imGuiLayer.propertiesWindow.clearSelected()
-                    val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f, 0)
+                    val block = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f, 1)
+                    if(addCollider) {
+                        val rb = RigidBody2D()
+                        rb.init(block)
+                        rb.bodyType = BodyType.Static
+                        block.addComponent(rb)
+                        val collider = Box2DCollider()
+                        collider.halfSize.set(Vector2f(0.25f, 0.25f))
+                        block.addComponent(collider)
+                        block.addComponent(Ground())
+                    }
                     levelEditorStuff.getComponent(MouseControls::class.java)?.pickUpObject(block)
                 }
                 ImGui.popID()

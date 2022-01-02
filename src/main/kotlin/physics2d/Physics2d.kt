@@ -1,5 +1,6 @@
 package physics2d
 
+import components.PillboxCollider
 import marki.GameObject
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.collision.shapes.PolygonShape
@@ -13,12 +14,17 @@ import physics2d.enums.BodyType
 
 class Physics2d {
 
-    private val gravity: Vec2 = Vec2(0f, -10f)
+    val gravity: Vec2 = Vec2(0f, -10f)
+
     private val world = World(gravity)
     private var physicsTime = 0f
     private val physicsTimeStep = 1f/60f
     private val velocityIterations = 8
     private val positionIterations = 3
+
+    init {
+        world.setContactListener(MarkiContactListener())
+    }
 
     fun add(go: GameObject) {
         val rb =  go.getComponent(RigidBody2D::class.java)
@@ -46,13 +52,11 @@ class Physics2d {
             val body = world.createBody(bodyDef)
             body.m_mass = rb.mass
             rb.rawBody = body
-            val collider = go.getComponent(CircleCollider::class.java) ?: go.getComponent(Box2DCollider::class.java)
-            if(collider is CircleCollider) {
-                addCircleCollider(rb, collider)
-            }
-
-            if (collider is Box2DCollider) {
-                addBox2DCollider(rb, collider)
+            val collider = go.getComponent(CircleCollider::class.java) ?: go.getComponent(Box2DCollider::class.java) ?: go.getComponent(PillboxCollider::class.java)
+            when (collider) {
+                is CircleCollider -> addCircleCollider(rb, collider)
+                is Box2DCollider -> addBox2DCollider(rb, collider)
+                is PillboxCollider -> addPillboxCollider(rb, collider)
             }
         }
     }
@@ -167,5 +171,30 @@ class Physics2d {
             fixture = fixture.m_next
         }
         return size
+    }
+
+    fun resetPillboxCollider(rb: RigidBody2D, collider: PillboxCollider) {
+        val body = rb.rawBody ?: return
+
+        val size = fixtureListSize(body)
+        for(i in 0 until size) {
+            body.destroyFixture(body.fixtureList)
+        }
+
+        addPillboxCollider(rb, collider)
+        body.resetMassData()
+    }
+
+    fun addPillboxCollider(rb: RigidBody2D, collider: PillboxCollider) {
+        assert(rb.rawBody != null) { "Raw body cannot be null" }
+        val body = rb.rawBody!!
+
+        addBox2DCollider(rb, collider.box)
+        addCircleCollider(rb, collider.topCircle)
+        addCircleCollider(rb, collider.bottomCircle)
+    }
+
+    fun isLocked(): Boolean {
+        return world.isLocked
     }
 }

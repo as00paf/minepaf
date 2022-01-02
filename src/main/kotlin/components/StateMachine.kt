@@ -56,7 +56,7 @@ class StateMachine : Component() {
         for (state in stateTransfers.keys) {
             if (state.state == currentState?.title && state.trigger == trigger) {
                 if (stateTransfers[state] != null) {
-                    val newStateIndex = states.indexOf(stateTransfers[state])
+                    val newStateIndex = stateIndexOf(stateTransfers[state])
                     if (newStateIndex > -1) {
                         currentState = states[newStateIndex]
                     }
@@ -65,7 +65,15 @@ class StateMachine : Component() {
             }
         }
 
-        System.out.println("Unable to find trigger '$trigger'")
+        println("Unable to find trigger '$trigger'")
+    }
+
+    private fun stateIndexOf(title: String?):Int {
+        states.forEachIndexed { index, state ->
+            if(state.title == title) return index
+        }
+
+        return -1
     }
 
     override fun start() {
