@@ -31,26 +31,17 @@ class RigidBody2D: Component() {
     @Transient var rawBody: Body? = null
 
     override fun update(dt: Float) {
-        val rb = rawBody
-        if(rb != null) {
-            gameObject.transform.position.set(rb.position.x, rb.position.y)
-            gameObject.transform.rotation = Math.toDegrees(rb.angle.toDouble())
-        }
-
-        /*rawBody?.let { rb ->
+        rawBody?.let { rb ->
 
             if(bodyType == BodyType.Static) {
                 rb.setTransform(Vec2(gameObject.transform.position.x, gameObject.transform.position.y), gameObject.transform.rotation.toFloat())
             } else {
-                gameObject.transform.position[rb.position.x] = rb.position.y
+                gameObject.transform.position.set(rb.position.x, rb.position.y)
                 gameObject.transform.rotation = Math.toDegrees(rb.angle.toDouble())
                 val vel = rb.linearVelocity
                 velocity.set(vel.x, vel.y)
             }
-
-            gameObject.transform.position.set(rb.position.x, rb.position.y)
-            gameObject.transform.rotation = Math.toDegrees(rb.angle.toDouble())
-        }*/
+        }
     }
 
     fun addVelocity(forceToAdd: Vector2f) {

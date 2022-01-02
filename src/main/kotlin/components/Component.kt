@@ -32,19 +32,19 @@ abstract class Component {
     open fun update(dt: Float) {}
     open fun editorUpdate(dt: Float) {}
 
-    fun beginCollision(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+    open fun beginCollision(go: GameObject, contact: Contact, hitNormal: Vector2f) {
 
     }
 
-    fun endCollision(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+    open fun endCollision(go: GameObject, contact: Contact, hitNormal: Vector2f) {
 
     }
 
-    fun preSolve(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+    open fun preSolve(go: GameObject, contact: Contact, hitNormal: Vector2f) {
 
     }
 
-    fun postSolve(go: GameObject, contact: Contact, hitNormal: Vector2f) {
+    open fun postSolve(go: GameObject, contact: Contact, hitNormal: Vector2f) {
 
     }
 
