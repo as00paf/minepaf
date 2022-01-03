@@ -7,7 +7,7 @@ import org.joml.Vector4f
 import java.lang.Float.max
 
 class GameCamera(private val gameCamera: Camera):Component() {
-    @Transient lateinit var player: GameObject
+    @Transient var player: GameObject? = null
 
     @Transient private var highestX = Float.MIN_VALUE
     @Transient private var undergroundYLevel = 0.0f
@@ -18,13 +18,13 @@ class GameCamera(private val gameCamera: Camera):Component() {
     private val undergroundColor = Vector4f(0f, 0f, 0f, 1f)
 
     override fun start() {
-        player = Window.currentScene.getGameObjectWith(PlayerController::class.java)!!
+        player = Window.currentScene.getGameObjectWith(PlayerController::class.java)
         gameCamera.clearColor.set(skyColor)
-        undergroundYLevel = gameCamera.position.y -
-                gameCamera.getProjectionSize().y - cameraBuffer
+        undergroundYLevel = gameCamera.position.y - gameCamera.getProjectionSize().y - cameraBuffer
     }
 
     override fun update(dt: Float) {
+        val player = player ?: return
         if (player.getComponent(PlayerController::class.java)?.hasWon() == false) {
             gameCamera.position.x = Math.max(player.transform.position.x - 2.5f, highestX)
             highestX = max(highestX, gameCamera.position.x)

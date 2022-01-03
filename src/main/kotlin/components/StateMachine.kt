@@ -107,7 +107,7 @@ class StateMachine : Component() {
             ImGui.inputText("State: ", title)
             state.title = title.get()
 
-            val doesLoop = ImBoolean(state.doesloop)
+            val doesLoop = ImBoolean(state.doesLoop)
             ImGui.checkbox("Does loop: ", doesLoop)
 
             state.setLoop(doesLoop.get())

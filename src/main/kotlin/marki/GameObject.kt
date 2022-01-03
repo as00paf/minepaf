@@ -8,7 +8,7 @@ import imgui.internal.ImGui
 import util.AssetPool
 import util.extensions.findByClass
 
-class GameObject(
+open class GameObject(
     var name: String,
 ) {
     companion object {
