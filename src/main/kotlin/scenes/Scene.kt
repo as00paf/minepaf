@@ -18,6 +18,7 @@ import java.nio.file.Paths
 class Scene(private val initializer: SceneInitializer, val camera: Camera = Camera(Vector2f(0f, 0f))) {
 
     val gameObjects = mutableListOf<GameObject>()
+    val pendingObjects = mutableListOf<GameObject>()
     val renderer = Renderer()
     val physics2d = Physics2d()
 
@@ -47,15 +48,16 @@ class Scene(private val initializer: SceneInitializer, val camera: Camera = Came
         if (!isRunning) {
             gameObjects.add(gameObject)
         } else {
-            gameObjects.add(gameObject)
-            gameObject.start()
-            renderer.add(gameObject)
-            physics2d.add(gameObject)
+            pendingObjects.add(gameObject)
         }
     }
 
     fun getGameObject(id: Int): GameObject? {
         return gameObjects.firstOrNull { it.getUid() == id }
+    }
+
+    fun <T> getGameObjectWith(clazz: Class<T>): GameObject? {
+        return gameObjects.firstOrNull { it.getComponent(clazz) != null }
     }
 
     fun editorUpdate(dt: Float) {
@@ -73,6 +75,15 @@ class Scene(private val initializer: SceneInitializer, val camera: Camera = Came
             }
             i++
         }
+
+        pendingObjects.forEach { gameObject ->
+            gameObjects.add(gameObject)
+            gameObject.start()
+            renderer.add(gameObject)
+            physics2d.add(gameObject)
+        }
+
+        pendingObjects.clear()
     }
 
 
@@ -92,6 +103,15 @@ class Scene(private val initializer: SceneInitializer, val camera: Camera = Came
             }
             i++
         }
+
+        pendingObjects.forEach { gameObject ->
+            gameObjects.add(gameObject)
+            gameObject.start()
+            renderer.add(gameObject)
+            physics2d.add(gameObject)
+        }
+
+        pendingObjects.clear()
     }
 
     fun render() {

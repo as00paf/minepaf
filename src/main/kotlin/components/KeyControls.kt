@@ -19,6 +19,7 @@ class KeyControls:Component() {
             Window.currentScene.addGameObjectToScene(newObject)
             newObject.transform.position.add(Settings.GRID_WIDTH, 0.0f)
             propertiesWindow.setActiveObject(newObject)
+            newObject.getComponent(StateMachine::class.java)?.refreshTextures()
         } else if (KeyListener.keyBeginPress(GLFW.GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW.GLFW_KEY_D) && activeGameObjects.size > 1) {
             val gos = ArrayList<GameObject>()
             gos.addAll(activeGameObjects)
@@ -27,6 +28,7 @@ class KeyControls:Component() {
                 val copy = go.copy()
                 Window.currentScene.addGameObjectToScene(copy)
                 propertiesWindow.addActiveGameObject(copy)
+                copy.getComponent(StateMachine::class.java)?.refreshTextures()
             }
         } else if (KeyListener.keyBeginPress(GLFW.GLFW_KEY_DELETE) && activeGameObjects.size > 0) {
             activeGameObjects.forEach { it.destroy() }

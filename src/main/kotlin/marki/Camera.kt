@@ -3,8 +3,11 @@ package marki
 import org.joml.Matrix4f
 import org.joml.Vector2f
 import org.joml.Vector3f
+import org.joml.Vector4f
 
-class Camera(var position: Vector2f = Vector2f(0f, 0f)) {
+class Camera(val position: Vector2f = Vector2f(0f, 0f),
+             val clearColor: Vector4f = Vector4f(1f, 1f, 1f, 1f)
+) {
 
     private var viewMatrix: Matrix4f = Matrix4f()
     private var projectionMatrix: Matrix4f = Matrix4f()

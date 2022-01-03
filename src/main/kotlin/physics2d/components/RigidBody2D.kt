@@ -45,7 +45,7 @@ class RigidBody2D: Component() {
     }
 
     fun addVelocity(forceToAdd: Vector2f) {
-        rawBody?.applyForceToCenter(Vec2(velocity.x, velocity.y))
+        rawBody?.applyForceToCenter(Vec2(forceToAdd.x, forceToAdd.y))
     }
 
     fun addImpulse(impulse: Vector2f) {

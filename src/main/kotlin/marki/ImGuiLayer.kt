@@ -135,14 +135,16 @@ class ImGuiLayer(val pickingTexture: PickingTexture) {
         fontConfig.destroy()
     }
 
-    fun imGui(dt: Float, currentScene: Scene) {
+    fun imGui(dt: Float, currentScene: Scene, runtimePlaying: Boolean) {
         startFrame()
 
         setupDockSpace()
         currentScene.imgui()
         gameViewWindow.imgui()
-        propertiesWindow.imgui()
-        hierarchyWindow.imgui()
+        if(!runtimePlaying){
+            propertiesWindow.imgui()
+            hierarchyWindow.imgui()
+        }
 
         endFrame()
     }

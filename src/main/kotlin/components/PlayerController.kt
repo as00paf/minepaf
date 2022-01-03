@@ -45,11 +45,6 @@ class PlayerController:Component() {
         rb.gravityScale = 0f
     }
 
-    //TODO : remove
-    override fun editorUpdate(dt: Float) {
-        update(dt)
-    }
-
     override fun update(dt: Float) {
         walk(dt)
         jump(dt)
@@ -163,5 +158,9 @@ class PlayerController:Component() {
                 jumpTime = 0
             }
         }
+    }
+
+    fun hasWon(): Boolean {
+        return false
     }
 }

@@ -12,7 +12,7 @@ import java.util.*
 
 object DebugDraw {
 
-    private const val MAX_LINES = 500
+    private const val MAX_LINES = 3000
 
     private val defaultDebugColor = Vector3f(0f, 1f, 0f)
     private val lines = mutableListOf<Line2D>()
@@ -40,7 +40,7 @@ object DebugDraw {
         glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * Float.SIZE_BYTES, 3 * Float.SIZE_BYTES.toLong())
         glEnableVertexAttribArray(1)
 
-        glLineWidth(1.0f)
+        glLineWidth(2.0f)
         started = true
     }
 
@@ -51,9 +51,7 @@ object DebugDraw {
         }
 
         // Remove dead lines
-        //println("Line count before removing: ${lines.size}")
         lines.removeIf { it.beginFrame() < 0 }
-        //println("Line count after removing: ${lines.size}")
     }
 
     fun draw() {
@@ -105,7 +103,16 @@ object DebugDraw {
 
     // Line2D
     fun addLine2D(from: Vector2f, to: Vector2f, color: Vector3f = defaultDebugColor, lifetime: Int = 2) {
-        if (lines.size >= MAX_LINES) return
+        val camera = Window.currentScene.camera
+        val cameraLeft = Vector2f(camera.position).add(Vector2f(-2f, -2f))
+        val cameraRight = Vector2f(camera.position).add(Vector2f(camera.getProjectionSize()).mul(camera.zoom))
+
+        val lineInView =
+            from.x >= cameraLeft.x && from.x <= cameraRight.x && from.y >= cameraLeft.y && from.y <= cameraRight.y ||
+                    to.x >= cameraLeft.x && to.x <= cameraRight.x && to.y >= cameraLeft.y && to.y <= cameraRight.y
+
+        if (lines.size >= DebugDraw.MAX_LINES || !lineInView) return
+
         lines.add(Line2D(from, to, color, lifetime))
     }
 

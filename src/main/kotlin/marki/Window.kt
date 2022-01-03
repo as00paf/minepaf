@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
 import physics2d.Physics2d
 import scenes.LevelEditorSceneInitializer
+import scenes.LevelSceneInitializer
 import scenes.Scene
 import scenes.SceneInitializer
 import util.AssetPool
@@ -155,7 +156,9 @@ object Window : Observer {
             DebugDraw.beginFrame()
 
             frameBuffer.bind()
-            glClearColor(1f, 1f, 1f, 1f)
+
+            val clearColor = currentScene.camera.clearColor
+            glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w)
             glClear(GL_COLOR_BUFFER_BIT)
 
             if (dt >= 0) {
@@ -182,7 +185,7 @@ object Window : Observer {
     }
 
     private fun renderImGui(dt: Float, currentScene: Scene) {
-        imGuiLayer.imGui(dt, currentScene)
+        imGuiLayer.imGui(dt, currentScene, runtimePlaying)
     }
 
     private fun changeScene(initializer: SceneInitializer, isFirstScene: Boolean = false) {
@@ -202,7 +205,7 @@ object Window : Observer {
             EventType.GameEngineStartPlay -> {
                 runtimePlaying = true
                 currentScene.save()
-                changeScene(LevelEditorSceneInitializer(), false)
+                changeScene(LevelSceneInitializer(), false)
             }
             EventType.GameEngineStopPlay -> {
                 runtimePlaying = false

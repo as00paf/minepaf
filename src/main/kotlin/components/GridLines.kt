@@ -34,15 +34,16 @@ class GridLines : Component() {
         val height = (projectionSize.y * camera.zoom) + GRID_HEIGHT * 2
 
         val maxLines = max(numVtLines, numHzLines)
+        val lifetime = 2
 
         for (i in 0 until maxLines) {
             val x = firstX + (GRID_WIDTH * i)
             val y = firstY + (GRID_HEIGHT * i)
             if (i < numVtLines) {
-                DebugDraw.addLine2D(Vector2f(x, firstY), Vector2f(x, firstY + height), defaultColor, 2)
+                DebugDraw.addLine2D(Vector2f(x, firstY), Vector2f(x, firstY + height), defaultColor, lifetime)
             }
             if (i < numHzLines) {
-                DebugDraw.addLine2D(Vector2f(firstX, y), Vector2f(firstX + width, y), defaultColor, 2)
+                DebugDraw.addLine2D(Vector2f(firstX, y), Vector2f(firstX + width, y), defaultColor, lifetime)
             }
         }
     }
